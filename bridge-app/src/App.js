@@ -5,13 +5,13 @@ import {
   Routes,
   Route
 } from 'react-router-dom';
-import Main from './pages/Main';
+import Welcome from './pages/Welcome';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Main/>}/>
+        <Route path='/' element={<Welcome/>}/>
       </Routes>
     </Router>
   );
