@@ -4,11 +4,30 @@ import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box';
+import { mainColor } from '../common/utils';
 
 
 const FormTextField = styled(TextField)(({ theme }) => ({
     marginTop: 1,
     width: 250,
+    color: 'white',
+    '& label.Mui-focused': {
+        color: 'white', // Color when focused
+      },
+      '& .MuiInput-underline:after': {
+        borderBottomColor: 'white', // Underline color when focused
+      },
+      '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+          borderColor: 'black', // Border color
+        },
+        '&:hover fieldset': {
+          borderColor: 'white', // Border color on hover
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: 'white',
+          },
+    }
 }));
 
 const FormBox = styled(Box)(({ theme }) => ({
@@ -23,10 +42,10 @@ const FormBox = styled(Box)(({ theme }) => ({
 
 const FormButton = styled(Button)(({ theme }) => ({
     marginTop: 10, 
-    backgroundColor: '#03adfc',
+    backgroundColor: mainColor,
     color: 'white',
     '&:hover': {
-        backgroundColor: '#03bafc'
+        backgroundColor: '#292221',
     }
 }));
 
