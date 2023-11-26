@@ -4,8 +4,6 @@ import {AppBar,
         IconButton, 
         Paper, 
         MenuList, 
-        ListItemText, 
-        ListItemIcon, 
         Typography, 
         Popper, 
         Grow, 
@@ -14,27 +12,36 @@ import {AppBar,
         Toolbar, 
         Box, 
         CssBaseline,
-        Tooltip} from '@mui/material';
+        Tooltip,
+        Alert,
+        Snackbar} from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { mainColor } from '../common/utils';
-import { FaSign, FaSignInAlt } from "react-icons/fa";
 import { GiCardAceHearts } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 
 
 const BridgeAppBar = (props) => {
   const appBarColor = '#171616';
-  const [open, setOpen] = useState(false);
-  const [user, setUser] = useState();
+  const [openProfileMenu, setOpenProfileMenu] = useState(false);
+  const [count, setCount] = useState();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const anchorRef = useRef(null);
   const navigate = useNavigate();
 
   const handleAvatarClick = () => {
-    setOpen(!open);
+    setOpenProfileMenu(!openProfileMenu);
   }
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleProfileMenuClose = () => {
+    setOpenProfileMenu(false);
+  }
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
   }
 
   const handleLogout = () => {
@@ -42,13 +49,22 @@ const BridgeAppBar = (props) => {
     props.setUsername('');
     props.setPassword('');
     props.setUser('');
+    setCount(count + 1);
+  }
+
+  const handleCardIconClick = () => {
+    if (localStorage.getItem('user')) {
+      navigate('/game-mode');
+    } else {
+      setOpenSnackbar(true);
+    }
   }
 
   useEffect(() => {
     if (!localStorage.getItem('user')) {
       navigate('/');
     }
-  }, [user])
+  }, [count])
 
   const handleSignIn = () => {
     navigate('/');
@@ -85,7 +101,7 @@ const BridgeAppBar = (props) => {
               <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                 <Tooltip title='Start playing'>
                   <IconButton
-                    onClick={() => navigate('/game-mode')}
+                    onClick={handleCardIconClick}
                     sx={{
                       color: 'white'
                     }}
@@ -108,7 +124,7 @@ const BridgeAppBar = (props) => {
                       }}
                     />
                   <Popper
-                    open={open}
+                    open={openProfileMenu}
                     placement='bottom-start'
                     transition
                     anchorEl={anchorRef.current}
@@ -122,9 +138,9 @@ const BridgeAppBar = (props) => {
                       }}
                     >
                       <Paper>
-                        <ClickAwayListener onClickAway={handleClose}>
+                        <ClickAwayListener onClickAway={handleProfileMenuClose}>
                           <MenuList
-                            autoFocusItem={open}
+                            autoFocusItem={openProfileMenu}
                           >
                             <Typography sx={{marginLeft: 1}}>{handleUsernameDisplay()}</Typography>
                             <Divider/>
@@ -145,6 +161,22 @@ const BridgeAppBar = (props) => {
                 </Box>
               </Toolbar>
         </AppBar>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity='warning'
+            variant='filled'
+            sx={{
+              width: '100%'
+            }}
+          >
+            You need to log in or sign up first
+          </Alert>
+        </Snackbar>
     </Box>
   )
 }
