@@ -5,6 +5,8 @@ import {
   Routes,
   Route
 } from 'react-router-dom';
+
+import Game from './pages/Game'
 import SignIn from './pages/SignIn';
 import BridgeAppBar from './components/BridgeAppBar';
 import GameMode from './pages/GameMode';
@@ -29,6 +31,8 @@ function App() {
   return (
     <Router>
       <Routes>
+
+        <Route path='/game' element={<Game/>}/>
         <Route 
           path='/' 
           element={

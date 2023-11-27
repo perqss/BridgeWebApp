@@ -1,0 +1,63 @@
+import {Card} from './card'
+import {Suit} from './suit'
+import {Rank} from './rank'
+
+const Deck: Array<Card> = [
+    new Card(Suit.Spades, Rank.Two, 0x1F0A2),
+    new Card(Suit.Spades, Rank.Three, 0x1F0A3),
+    new Card(Suit.Spades, Rank.Four, 0x1F0A4),
+    new Card(Suit.Spades, Rank.Five, 0x1F0A5),
+    new Card(Suit.Spades, Rank.Six, 0x1F0A6),
+    new Card(Suit.Spades, Rank.Seven, 0x1F0A7),
+    new Card(Suit.Spades, Rank.Eight, 0x1F0A8),
+    new Card(Suit.Spades, Rank.Nine, 0x1F0A9),
+    new Card(Suit.Spades, Rank.Ten, 0x1F0AA),
+    new Card(Suit.Spades, Rank.Jack, 0x1F0AB),
+    new Card(Suit.Spades, Rank.Queen, 0x1F0AD),
+    new Card(Suit.Spades, Rank.King, 0x1F0AE),
+    new Card(Suit.Spades, Rank.Ace, 0x1F0A1),
+
+    new Card(Suit.Hearts, Rank.Two, 0x1F0B2),
+    new Card(Suit.Hearts, Rank.Three, 0x1F0B3),
+    new Card(Suit.Hearts, Rank.Four, 0x1F0B4),
+    new Card(Suit.Hearts, Rank.Five, 0x1F0B5),
+    new Card(Suit.Hearts, Rank.Six, 0x1F0B6),
+    new Card(Suit.Hearts, Rank.Seven, 0x1F0B7),
+    new Card(Suit.Hearts, Rank.Eight, 0x1F0B8),
+    new Card(Suit.Hearts, Rank.Nine, 0x1F0B9),
+    new Card(Suit.Hearts, Rank.Ten, 0x1F0BA),
+    new Card(Suit.Hearts, Rank.Jack, 0x1F0BB),
+    new Card(Suit.Hearts, Rank.Queen, 0x1F0BD),
+    new Card(Suit.Hearts, Rank.King, 0x1F0BE),
+    new Card(Suit.Hearts, Rank.Ace, 0x1F0B1),
+
+    new Card(Suit.Diamonds, Rank.Two, 0x1F0C2),
+    new Card(Suit.Diamonds, Rank.Three, 0x1F0C3),
+    new Card(Suit.Diamonds, Rank.Four, 0x1F0C4),
+    new Card(Suit.Diamonds, Rank.Five, 0x1F0C5),
+    new Card(Suit.Diamonds, Rank.Six, 0x1F0C6),
+    new Card(Suit.Diamonds, Rank.Seven, 0x1F0C7),
+    new Card(Suit.Diamonds, Rank.Eight, 0x1F0C8),
+    new Card(Suit.Diamonds, Rank.Nine, 0x1F0C9),
+    new Card(Suit.Diamonds, Rank.Ten, 0x1F0CA),
+    new Card(Suit.Diamonds, Rank.Jack, 0x1F0CB),
+    new Card(Suit.Diamonds, Rank.Queen, 0x1F0CD),
+    new Card(Suit.Diamonds, Rank.King, 0x1F0CE),
+    new Card(Suit.Diamonds, Rank.Ace, 0x1F0C1),
+
+    new Card(Suit.Clubs, Rank.Two, 0x1F0D2),
+    new Card(Suit.Clubs, Rank.Three, 0x1F0D3),
+    new Card(Suit.Clubs, Rank.Four, 0x1F0D4),
+    new Card(Suit.Clubs, Rank.Five, 0x1F0D5),
+    new Card(Suit.Clubs, Rank.Six, 0x1F0D6),
+    new Card(Suit.Clubs, Rank.Seven, 0x1F0D7),
+    new Card(Suit.Clubs, Rank.Eight, 0x1F0D8),
+    new Card(Suit.Clubs, Rank.Nine, 0x1F0D9),
+    new Card(Suit.Clubs, Rank.Ten, 0x1F0DA),
+    new Card(Suit.Clubs, Rank.Jack, 0x1F0DB),
+    new Card(Suit.Clubs, Rank.Queen, 0x1F0DD),
+    new Card(Suit.Clubs, Rank.King, 0x1F0DE),
+    new Card(Suit.Clubs, Rank.Ace, 0x1F0D1),
+]
+
+export {Deck}
