@@ -37,7 +37,11 @@ const BridgeAppBar = (props) => {
   }
 
   const handleAccountClick = () => {
-    navigate('/account');
+    if (localStorage.getItem('user')) {
+      navigate('/account');
+    } else {
+      setOpenSnackbar(true);
+    }
   }
 
   const handleProfileMenuClose = () => {
