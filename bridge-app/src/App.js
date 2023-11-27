@@ -8,11 +8,14 @@ import {
 import SignIn from './pages/SignIn';
 import BridgeAppBar from './components/BridgeAppBar';
 import GameMode from './pages/GameMode';
+import Account from './pages/Account';
 
 function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState("");
+  const [count, setCount] = useState(0);
+
 
   const TopBar = () => (
     <BridgeAppBar
@@ -46,8 +49,20 @@ function App() {
           path='/game-mode'
           element={
             <div>
-                <TopBar/>
-                <GameMode/>
+              <TopBar/>
+              <GameMode/>
+            </div>
+          }
+        />
+        <Route
+          path='/account'
+          element={
+            <div>
+              <TopBar/>
+              <Account
+                count={count}
+                setCount={setCount}
+              />
             </div>
           }
         />

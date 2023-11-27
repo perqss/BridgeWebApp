@@ -1,10 +1,12 @@
 import React from 'react';
-import BridgeAppBar from '../components/BridgeAppBar';
-import { Typography, Button, Avatar, Paper } from '@mui/material'
-import { mainColor } from '../common/utils';
+import { Typography, Button, Card, CardActionArea, CardActions} from '@mui/material'
+import { backgroundColor, mainColor } from '../common/utils';
+import { IoPeopleOutline } from "react-icons/io5";
+import { IoPersonOutline } from "react-icons/io5";
 
 const GameMode = () => {
   const gameModes = ['Singleplayer', 'Multiplayer'];
+  const icons = [<IoPersonOutline fontSize={150} color='grey'/>, <IoPeopleOutline fontSize={150} color='grey'/>]
   return (
     <div
         style={{
@@ -24,24 +26,51 @@ const GameMode = () => {
         >
             Choose your game mode
         </Typography>
-        {gameModes.map((gameMode, index) => 
-            <Paper
-                sx={{
-                    backgroundColor: mainColor,
-                    marginTop: '20px',
-                }}
-            >
-            <Button
-                sx={{
-                    fontSize: '30px',
-                    color: 'white',
-                    width: 300,
-                }}
-            >
-                {gameMode}
-            </Button>
-        </Paper>
-        )}
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'row',
+                
+            }}
+        >
+            {gameModes.map((gameMode, index) =>
+                <Card
+                    elevation={20}
+                    key={index}
+                    sx={{
+                        backgroundColor: backgroundColor,
+                        marginTop: '20px',
+                        margin: 5,
+                    }}
+                >
+                <CardActionArea>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}
+                    >
+                        {icons[index]}
+                    </div>
+                    <CardActions>
+                        <Typography
+                            variant='h4'
+                            sx={{
+                                color: 'white',
+                                width: 300,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            {gameMode}
+                        </Typography>
+                    </CardActions>
+                </CardActionArea>
+            </Card>
+            )}
+        </div>
     </div>
   );
 }

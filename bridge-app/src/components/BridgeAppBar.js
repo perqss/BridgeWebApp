@@ -14,11 +14,13 @@ import {AppBar,
         CssBaseline,
         Tooltip,
         Alert,
-        Snackbar} from '@mui/material';
+        Snackbar,
+        Avatar} from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { mainColor } from '../common/utils';
 import { GiCardAceHearts } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
+import { handleSnackbarClose } from '../common/functions';
 
 
 const BridgeAppBar = (props) => {
@@ -28,20 +30,18 @@ const BridgeAppBar = (props) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const anchorRef = useRef(null);
   const navigate = useNavigate();
+  const onClose = (event, reason) => handleSnackbarClose(setOpenSnackbar, event, reason);
 
   const handleAvatarClick = () => {
     setOpenProfileMenu(!openProfileMenu);
   }
 
-  const handleProfileMenuClose = () => {
-    setOpenProfileMenu(false);
+  const handleAccountClick = () => {
+    navigate('/account');
   }
 
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenSnackbar(false);
+  const handleProfileMenuClose = () => {
+    setOpenProfileMenu(false);
   }
 
   const handleLogout = () => {
@@ -117,11 +117,8 @@ const BridgeAppBar = (props) => {
                     onClick={handleAvatarClick}
                     ref={anchorRef}
                   >
-                    <AccountCircleIcon 
-                      sx={{
-                        fontSize: '45px',
-                        color: 'white',
-                      }}
+                    <Avatar
+                      src={localStorage.getItem('avatarURL')}
                     />
                   <Popper
                     open={openProfileMenu}
@@ -144,10 +141,10 @@ const BridgeAppBar = (props) => {
                           >
                             <Typography sx={{marginLeft: 1}}>{handleUsernameDisplay()}</Typography>
                             <Divider/>
-                            <MenuItem >My account</MenuItem>
+                            <MenuItem onClick={handleAccountClick}>My account</MenuItem>
                             {
                               localStorage.getItem('user') ? 
-                              <MenuItem onClick={handleLogout}>Logout</MenuItem> :
+                              <MenuItem onClick={handleLogout}>Log out</MenuItem> :
                               <MenuItem onClick={handleSignIn}>Sign in</MenuItem>
                             }
                           </MenuList>
@@ -164,10 +161,10 @@ const BridgeAppBar = (props) => {
         <Snackbar
           open={openSnackbar}
           autoHideDuration={3000}
-          onClose={handleSnackbarClose}
+          onClose={onClose}
         >
           <Alert
-            onClose={handleSnackbarClose}
+            onClose={onClose}
             severity='warning'
             variant='filled'
             sx={{

@@ -6,11 +6,18 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box';
 import { mainColor } from '../common/utils';
 
+export const inputProps = {
+    style: {color: 'grey', borderColor: 'grey'},
+    focused: {borderColor: 'grey'}
+  }
+  
+export const inputLabelProps = {
+style: {color: 'grey'}
+}
 
 const FormTextField = styled(TextField)(({ theme }) => ({
     marginTop: 1,
     width: 250,
-    color: 'white',
     '& label.Mui-focused': {
         color: 'white', // Color when focused
       },

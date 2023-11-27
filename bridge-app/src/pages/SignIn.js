@@ -1,18 +1,11 @@
 import React, { useEffect } from 'react';
 import  { FormBox, FormButton, FormTextField }   from '../components/MaterialComponentsCss';
 import { useNavigate } from 'react-router-dom';
+import { inputLabelProps, inputProps } from '../components/MaterialComponentsCss';
 
 
 const SignIn = (props) => {
   const navigate = useNavigate();
-  const inputProps = {
-    style: {color: 'white', borderColor: 'white'},
-    focused: {borderColor: 'white'}
-  }
-  const inputLabelProps = {
-    style: {color: 'white'}
-  }
-
   const handleSubmit = async e => {
     e.preventDefault();
     const username = props.username;
