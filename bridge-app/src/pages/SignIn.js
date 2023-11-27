@@ -1,45 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, Button, Container } from '@mui/material';
+import React, { useEffect } from 'react';
 import  { FormBox, FormButton, FormTextField }   from '../components/MaterialComponentsCss';
-import BridgeAppBar from '../components/BridgeAppBar';
+import { useNavigate } from 'react-router-dom';
+import { inputLabelProps, inputProps } from '../components/MaterialComponentsCss';
 
-const Welcome = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState("");
 
+const SignIn = (props) => {
+  const navigate = useNavigate();
   const handleSubmit = async e => {
     e.preventDefault();
+    const username = props.username;
+    const password = props.password;
     const user = { username, password };
-    setUser(user);
     localStorage.setItem('user', JSON.stringify(user));
-
+    props.setUser(user);
   }
 
-console.log(user)
+  useEffect(() => {
+    if (localStorage.getItem('user')) {
+      navigate('/game-mode')
+    }
+  }, [props.user])
+
   return (
     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
-    <BridgeAppBar
-      setUsername={setUsername} 
-      setPassword={setPassword}
-      />
     {localStorage.getItem('user') ? '' : 
       <FormBox>
         <FormTextField
           variant='outlined'
           name='username'
           label='username'
-          value={username}
+          value={props.username}
           type='text'
-          onChange={({ target }) => setUsername(target.value)}
+          onChange={({ target }) => props.setUsername(target.value)}
+          InputProps={inputProps}
+          InputLabelProps={inputLabelProps}
         />
         <FormTextField
           variant='outlined'
           name='password'
           label='password'
-          value={password}
+          value={props.password}
           type='password'
-          onChange={({ target }) => setPassword(target.value)}
+          onChange={({ target }) => props.setPassword(target.value)}
+          InputProps={inputProps}
+          InputLabelProps={inputLabelProps}
         />
         <FormButton 
           onClick={handleSubmit}>
@@ -51,4 +55,4 @@ console.log(user)
   );
 };
 
-export default Welcome;
+export default SignIn;
