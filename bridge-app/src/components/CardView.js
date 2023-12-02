@@ -1,4 +1,4 @@
-import '../style/CardView.css' 
+import '../style/game/CardView.css' 
 
 const CardView = ({id}) => {
     return (

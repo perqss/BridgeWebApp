@@ -1,0 +1,22 @@
+#ContainerMiddle {
+    height: 60%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+}
+
+#HandWest {
+    width: 10%;
+    background-color: rgb(160, 170, 69);
+}
+
+#Table {
+    width: 80%;
+    background-color: green;
+}
+
+#HandEast {
+    width: 10%;
+    background-color: rgb(160, 170, 69);
+}
