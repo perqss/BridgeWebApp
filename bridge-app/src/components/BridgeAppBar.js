@@ -71,7 +71,11 @@ const BridgeAppBar = (props) => {
   }, [count])
 
   const handleSignIn = () => {
-    navigate('/');
+    navigate('/login');
+  }
+
+  const handleSignUp = () => {
+    navigate('/signup');
   }
 
   const handleUsernameDisplay = () => {
