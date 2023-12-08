@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { mainColor } from '../common/utils';
 
 export const inputProps = {
@@ -66,4 +67,20 @@ const StyledAlert = styled(Alert)(({ theme }) => ({
     marginTop: 1,
 }));
 
-export {FormTextField, FormBox, FormButton, StyledAlert, ItemInfoButton};
+const Header = (props) => {
+  return (
+    <Typography
+      variant='h5'
+      color='white'
+      sx={{
+          marginBottom: '60px',
+          marginTop: '10px',
+      }}
+    >
+      {props.text}
+    </Typography>
+  )
+}
+
+
+export {FormTextField, FormBox, FormButton, StyledAlert, ItemInfoButton, Header};

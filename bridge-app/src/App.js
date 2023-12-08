@@ -11,6 +11,8 @@ import SignIn from './pages/SignIn';
 import BridgeAppBar from './components/BridgeAppBar';
 import GameMode from './pages/GameMode';
 import Account from './pages/Account';
+import ChooseTournament from './pages/ChooseTournament';
+import Tournament from './pages/Tournament';
 
 function App() {
   const [username, setUsername] = useState("");
@@ -67,6 +69,24 @@ function App() {
                 count={count}
                 setCount={setCount}
               />
+            </div>
+          }
+        />
+        <Route
+          path='/choose-tournament'
+          element={
+            <div>
+              <TopBar/>
+              <ChooseTournament/>
+            </div>
+          }
+        />
+          <Route
+          path='/tournaments/:tournamentName'
+          element={
+            <div>
+              <TopBar/>
+              <Tournament/>
             </div>
           }
         />
