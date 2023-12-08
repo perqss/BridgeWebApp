@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { DataGrid, gridPageCountSelector, GridPagination, useGridApiContext, useGridSelector } from '@mui/x-data-grid';
 import MuiPagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography'
@@ -26,10 +26,13 @@ const rows = [
 
 const Tournament = () => {
 
-  const sortDataByPoints = (data) => {
-    data.sort((a, b) => b.points - a.points);
-  }
-  sortDataByPoints(rows);
+  const [data, setData] = useState();
+
+  useEffect(() => {
+    const sortedRows = rows.slice().sort((a, b) => b.points - a.points);
+    setData(sortedRows);
+  }, [])
+
   const tournamentName = useParams().tournamentName;
   return (
     <div style={{ height: '100vh', width: '100vw', marginTop: '60px', display: 'flex', flexDirection: 'column'}}>
@@ -45,12 +48,12 @@ const Tournament = () => {
                 Play Next Deal
             </FormButton>
         </div>
-      <DataGrid
+      {data && <DataGrid
         sx={{
             color: 'white',
             backgroundColor: backgroundColor,
         }}
-        rows={rows}
+        rows={data}
         columns={columns}
         initialState={{
           columns: {
@@ -60,7 +63,7 @@ const Tournament = () => {
           },
         }}
         hideFooter
-      />
+      />}
     </div>
   );
 }
