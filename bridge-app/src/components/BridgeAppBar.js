@@ -48,14 +48,6 @@ const BridgeAppBar = (props) => {
     setOpenProfileMenu(false);
   }
 
-  const handleLogout = () => {
-    localStorage.clear();
-    props.setUsername('');
-    props.setPassword('');
-    props.setUser('');
-    setCount(count + 1);
-  }
-
   const handleCardIconClick = () => {
     if (localStorage.getItem('user')) {
       navigate('/game-mode');
@@ -71,7 +63,7 @@ const BridgeAppBar = (props) => {
   }, [count])
 
   const handleSignIn = () => {
-    navigate('/login');
+    navigate('/');
   }
 
   const handleSignUp = () => {
@@ -81,9 +73,9 @@ const BridgeAppBar = (props) => {
   const handleUsernameDisplay = () => {
     const user = localStorage.getItem('user');
     if (user) {
-      return JSON.parse(user).username;
+      return user;
     } else {
-    return 'Not logged in'
+      return 'Not logged in'
     }
   }
 
@@ -152,8 +144,11 @@ const BridgeAppBar = (props) => {
                             <MenuItem onClick={handleAccountClick}>My account</MenuItem>
                             {
                               localStorage.getItem('user') ? 
-                              <MenuItem onClick={handleLogout}>Log out</MenuItem> :
-                              <MenuItem onClick={handleSignIn}>Sign in</MenuItem>
+                              <MenuItem onClick={props.logout}>Log out</MenuItem> :
+                              <>
+                                <MenuItem onClick={handleSignIn}>Sign in</MenuItem>
+                                <MenuItem onClick={handleSignUp}>Sign up</MenuItem>
+                              </>
                             }
                           </MenuList>
                         </ClickAwayListener>

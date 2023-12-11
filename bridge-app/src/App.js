@@ -7,19 +7,17 @@ import {
 
 import Game from './pages/Game'
 import SignIn from './pages/SignIn';
+import Signup from './pages/Signup';
 import BridgeAppBar from './components/BridgeAppBar';
 import GameMode from './pages/GameMode';
 import Account from './pages/Account';
-import Login from './components/Login';
-import Signup from './components/Signup';
-
-import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 import Service from './services/Service';
 
+import { BottomNavigation } from '@mui/material';
+
+
 function App() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
   const [user, setUser] = React.useState(null);
   const [token, setToken] = React.useState(null);
@@ -44,7 +42,7 @@ function App() {
     setUser(''); 
     localStorage.setItem('token', ''); 
     localStorage.setItem('user', '');
-
+    setCount(count - 1);
   }
   async function signup(user = null) {
     Service.signup(user).then(response => {
@@ -62,10 +60,9 @@ function App() {
 
   const TopBar = () => (
     <BridgeAppBar
-      setUsername={setUsername}
-      setPassword={setPassword}
       setUser={setUser}
       user={user}
+      logout={logout}
      />
   )
 
@@ -80,12 +77,8 @@ function App() {
               element={
                 <div>
                   <SignIn
-                    username={username}
-                    password={password}
                     user={user}
-                    setUsername={setUsername}
-                    setPassword={setPassword}
-                    setUser={setUser}
+                    login={login}
                   />
                 </div> 
               }
@@ -110,12 +103,6 @@ function App() {
               }
             />
             <Route
-              path='/login'
-              element={
-                  <Login login={login} />
-              }
-            />
-            <Route
               path='/signup'
               element={
                   <Signup signup={signup} />
@@ -123,17 +110,15 @@ function App() {
             />
           </Routes>
         </div>
-        <footer className="text-center text-lg-start \
-          bg-light text-muted mt-4">
+        <BottomNavigation className="text-center text-lg-start bg-light text-muted mt-4">
             <div className="text-center p-4">
-              © Copyright - 
+              © Copyright &nbsp;
               <a target="_blank" 
-                className="text-reset fw-bold text-decoration-none"
                 href="">
               Jan Kowalski
               </a>
             </div>
-        </footer>
+        </BottomNavigation>
       </div>
   );
 }
