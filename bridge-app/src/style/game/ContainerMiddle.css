@@ -13,10 +13,20 @@
 
 #Table {
     width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: green;
 }
 
 #HandEast {
     width: 10%;
     background-color: rgb(160, 170, 69);
+}
+
+#AuctionRectangle {
+    background-color: green;
+    width: 60%;
+    height: 80%;
+    border: 15px solid yellow;
 }

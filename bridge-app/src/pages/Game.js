@@ -11,25 +11,25 @@ const dealer = new Dealer();
 const hands = dealer.deal();
 
 const Game = () => {
-  console.log("Deal")
-  console.log(hands.north)
-  console.log(hands.south)
-  console.log(hands.west)
-  console.log(hands.west)
+  console.log("Deal");
+  console.log(hands.north);
+  console.log(hands.south);
+  console.log(hands.west);
+  console.log(hands.west);
   console.log("----");
 
-  const cardsSouth = hands.south.cards
-  const cardPlayedSouth = []
+  const cardsSouth = hands.south.cards;
+  const cardPlayedSouth = [];
 
-  const [updatedCardsSouth, updateCardsSouth] = React.useState(cardsSouth)
-  const [updatedCardsPlayedSouth, updateCardsPlayedSouth] = React.useState(cardPlayedSouth)  
+  const [updatedCardsSouth, updateCardsSouth] = React.useState(cardsSouth);
+  const [updatedCardsPlayedSouth, updateCardsPlayedSouth] = React.useState(cardPlayedSouth)  ;
 
   function handleRemove(id) {
     const newCardsPlayedSouth = updatedCardsSouth.filter((card) => card.id === id);
     const newCardsSouth = updatedCardsSouth.filter((card) => card.id !== id);
   
-    updateCardsSouth(newCardsSouth)
-    updateCardsPlayedSouth(newCardsPlayedSouth)
+    updateCardsSouth(newCardsSouth);
+    updateCardsPlayedSouth(newCardsPlayedSouth);
   }
 
   return (
@@ -50,11 +50,20 @@ const Game = () => {
           </div>
           <div id="Table">
             <ul id="CardPlayedSouth">
-              {updatedCardsPlayedSouth.map((card) => (
-              <li>
-              <CardView id={card.id} />
+              {updatedCardsPlayedSouth.map((card, index) => (
+              <li key={index}>
+              <CardView 
+                id={card.id}
+              />
               </li>))}
             </ul>
+            <div id="AuctionRectangle">
+                <div id="InnerAuctionRectangle">
+
+                </div>
+            </div>
+
+
           </div>
           <div id="HandEast">
 
@@ -65,9 +74,14 @@ const Game = () => {
           <div id="DownLeftCorner">
           </div>
           <ul id="HandSouth">
-            {updatedCardsSouth.map((card) => (
-            <li onClick={() => handleRemove(card.id)}>
-            <CardView id={card.id} />
+            {updatedCardsSouth.map((card, index) => (
+            <li 
+              onClick={() => handleRemove(card.id)}
+              key={index}
+            >
+            <CardView 
+              id={card.id} 
+            />
             </li>))}
           </ul>
           <div id="DownRightCorner">

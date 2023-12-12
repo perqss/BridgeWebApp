@@ -1,3 +1,5 @@
 .CardView {
-  font-size: 60px;
+  font-size: 100px;
+  margin: 0;
+  padding: 0;
 }
