@@ -176,7 +176,7 @@ const Account = (props) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: 50,
-                width: 200,
+                minWidth: 200,
             }}
         >
             {JSON.parse(localStorage.getItem('user'))?.username}
