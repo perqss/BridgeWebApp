@@ -106,14 +106,10 @@ const Game = () => {
                 </div>
               </div>
             </div>
-
-
           </div>
           <div id="HandEast">
-
           </div>
         </div>
-        
         <div id="ContainerDown">
           <div id="DownLeftCorner">
           </div>
@@ -124,7 +120,8 @@ const Game = () => {
               key={index}
             >
             <CardView 
-              id={card.id} 
+              id={card.id}
+              color={card.color} 
             />
             </li>))}
           </ul>

@@ -1,8 +1,15 @@
 import '../style/game/CardView.css' 
 
-const CardView = ({id}) => {
+const CardView = ({id, color}) => {
     return (
-        <p className='CardView'> {String.fromCodePoint(id)} </p>
+        <p 
+            className='CardView'
+            style={{
+                color: color
+            }}
+        > 
+            {String.fromCodePoint(id)} 
+        </p>
     )
 }
 
