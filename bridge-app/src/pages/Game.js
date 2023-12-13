@@ -1,15 +1,22 @@
-import React from 'react';
-import {Dealer} from '../common/deck/dealer'
-import {CardView} from '../components/CardView'
+import React, {useState} from 'react';
+import {Dealer} from '../common/deck/dealer';
+import {CardView} from '../components/CardView';
+import {Card} from '../common/deck/card';
+import {Color} from '../common/deck/color';
 
-import '../style/game/GameTopContainer.css'
-import '../style/game/ContainerTop.css'
-import '../style/game/ContainerMiddle.css'
-import '../style/game/ContainerDown.css'
+import '../style/game/GameTopContainer.css';
+import '../style/game/ContainerTop.css';
+import '../style/game/ContainerMiddle.css';
+import '../style/game/ContainerDown.css';
 import { backgroundColor } from '../common/utils';
 
 const dealer = new Dealer();
 const hands = dealer.deal();
+const cardBack = new Card(undefined, undefined, 0x1F0A0, Color.black);
+const cardBacks = [];
+for (let i = 0; i < 13; i++) {
+  cardBacks.push(cardBack);
+}
 
 const Game = () => {
   console.log("Deal");
@@ -20,10 +27,12 @@ const Game = () => {
   console.log("----");
 
   const cardsSouth = hands.south.cards;
+  const cardsNorth = hands.north.cards;
   const cardPlayedSouth = [];
 
-  const [updatedCardsSouth, updateCardsSouth] = React.useState(cardsSouth);
-  const [updatedCardsPlayedSouth, updateCardsPlayedSouth] = React.useState(cardPlayedSouth)  ;
+  const [updatedCardsSouth, updateCardsSouth] = useState(cardsSouth);
+  const [updatedCardsPlayedSouth, updateCardsPlayedSouth] = useState(cardPlayedSouth);
+  const [updatedCardsNorth, updateCardsNorth] = useState(cardsNorth);
 
   function handleRemove(id) {
     const newCardsPlayedSouth = updatedCardsSouth.filter((card) => card.id === id);
@@ -39,15 +48,36 @@ const Game = () => {
         <div id="ContainerTop">
           <div id="TopLeftCorner">
           </div>
-          <div id="HandNorth">
-
-          </div>
+          <ul id="HandSouthNorth">
+            {updatedCardsNorth.map((card, index) => (
+              <li 
+                onClick={() => handleRemove(card.id)}
+                key={index}
+              >
+              <CardView 
+                id={card.id}
+                color={card.color} 
+              />
+              </li>))}
+          </ul>
           <div id="TopRightCorner">
           </div>
         </div>
         <div id="ContainerMiddle">
           <div id="HandWest">
-
+          {cardBacks.map((card, index) => (
+                <li 
+                  onClick={() => handleRemove(card.id)}
+                  key={index}
+                >
+                <CardView 
+                  id={card.id}
+                  color={card.color}
+                  rotate='rotate(90deg)'
+                  marginTop='-40px'
+                  fontSize='55px'
+                />
+                </li>))}
           </div>
           <div id="Table">
             <ul id="CardPlayedSouth">
@@ -113,7 +143,7 @@ const Game = () => {
         <div id="ContainerDown">
           <div id="DownLeftCorner">
           </div>
-          <ul id="HandSouth">
+          <ul id="HandSouthNorth">
             {updatedCardsSouth.map((card, index) => (
             <li 
               onClick={() => handleRemove(card.id)}
