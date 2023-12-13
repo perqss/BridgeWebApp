@@ -1,0 +1,31 @@
+#ContainerDown {
+    height: 20%;
+    width: 100%;
+    display: flex;
+}
+
+#DownLeftCorner {
+    width: 10%;
+    background-color: rgb(167, 105, 13);
+}
+
+#HandSouthNorth {
+    width: 80%;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    background-color: rgb(160, 170, 69);
+}
+
+#DownRightCorner {
+    width: 10%;
+    background-color: rgb(167, 105, 13);
+}
+
+#CardPlayedSouth {
+    padding: 0;
+}
