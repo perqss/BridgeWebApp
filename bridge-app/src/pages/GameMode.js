@@ -3,10 +3,15 @@ import { Typography, Button, Card, CardActionArea, CardActions} from '@mui/mater
 import { backgroundColor, mainColor } from '../common/utils';
 import { IoPeopleOutline } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
+import { Header } from '../components/MaterialComponentsCss';
+
 
 const GameMode = () => {
   const gameModes = ['Singleplayer', 'Multiplayer'];
-  const icons = [<IoPersonOutline fontSize={150} color='grey'/>, <IoPeopleOutline fontSize={150} color='grey'/>]
+  const icons = [<IoPersonOutline fontSize={150} color='grey'/>, <IoPeopleOutline fontSize={150} color='grey'/>];
+  const urls = ['/choose-tournament', '/game-mode'];
+  const navigate = useNavigate();
   return (
     <div
         style={{
@@ -17,15 +22,9 @@ const GameMode = () => {
             alignItems: 'center'
         }}
     >
-        <Typography
-            variant='h5'
-            color='white'
-            sx={{
-                marginBottom: '60px'
-            }}
-        >
-            Choose your game mode
-        </Typography>
+        <Header
+            text='Choose your game mode'
+        />
         <div
             style={{
                 display: 'flex',
@@ -50,6 +49,7 @@ const GameMode = () => {
                             justifyContent: 'center',
                             alignItems: 'center'
                         }}
+                        onClick={() => navigate(urls[index])}
                     >
                         {icons[index]}
                     </div>

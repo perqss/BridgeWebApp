@@ -11,6 +11,8 @@ import Signup from './pages/Signup';
 import BridgeAppBar from './components/BridgeAppBar';
 import GameMode from './pages/GameMode';
 import Account from './pages/Account';
+import ChooseTournament from './pages/ChooseTournament';
+import Tournament from './pages/Tournament';
 
 import Service from './services/Service';
 
@@ -80,7 +82,17 @@ function App() {
                     user={user}
                     login={login}
                   />
+                  <BottomNavigation className="text-center text-lg-start bg-light text-muted mt-4">
+                    <div className="text-center p-4">
+                      © Copyright &nbsp;
+                      <a target="_blank" 
+                        href="">
+                        Jan Kowalski
+                      </a>
+                    </div>
+                  </BottomNavigation>
                 </div> 
+                
               }
             />
             <Route
@@ -108,17 +120,26 @@ function App() {
                   <Signup signup={signup} />
               }
             />
+            <Route
+              path='/choose-tournament'
+              element={
+                <div>
+                  <TopBar/>
+                  <ChooseTournament/>
+                </div>
+              }
+            />
+            <Route
+              path='/tournaments/:tournamentName'
+              element={
+                <div>
+                  <TopBar/>
+                  <Tournament/>
+                </div>
+              }
+            />
           </Routes>
         </div>
-        <BottomNavigation className="text-center text-lg-start bg-light text-muted mt-4">
-            <div className="text-center p-4">
-              © Copyright &nbsp;
-              <a target="_blank" 
-                href="">
-              Jan Kowalski
-              </a>
-            </div>
-        </BottomNavigation>
       </div>
   );
 }
