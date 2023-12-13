@@ -6,6 +6,7 @@ import '../style/game/GameTopContainer.css'
 import '../style/game/ContainerTop.css'
 import '../style/game/ContainerMiddle.css'
 import '../style/game/ContainerDown.css'
+import { backgroundColor } from '../common/utils';
 
 const dealer = new Dealer();
 const hands = dealer.deal();
@@ -57,10 +58,53 @@ const Game = () => {
               />
               </li>))}
             </ul>
-            <div id="AuctionRectangle">
-                <div id="InnerAuctionRectangle">
-
+            <div id="TableRectangle">
+              <div className='center'>
+                <div 
+                  id="VerticalPlaceHolder"
+                >
+                  <div id="InnerVerticalPlaceHolder">
+                    N
+                  </div>
+                  <div id="VerticalPlaceHolderText">
+                    username
+                  </div>
                 </div>
+              </div>
+              <div id="SidePlaceHolders">
+                <div id="SidePlaceHolder">
+                  <div id="InnerSidePlaceHolder">
+                    W
+                  </div>
+                  <div id="SidePlaceHolderText">
+                    username
+                  </div>
+                </div>
+                <div 
+                  id="SidePlaceHolder"
+                  className="right"
+                >
+                  <div id="InnerSidePlaceHolder">
+                    E
+                  </div>
+                  <div id="SidePlaceHolderText">
+                    username
+                  </div>
+                </div>
+              </div>
+              <div className='center'>
+                <div 
+                  id="VerticalPlaceHolder"
+                  className="bottom"
+                >
+                  <div id="InnerVerticalPlaceHolder">
+                    S
+                  </div>
+                  <div id="VerticalPlaceHolderText">
+                    username
+                  </div>
+                </div>
+              </div>
             </div>
 
 
