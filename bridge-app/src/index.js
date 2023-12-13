@@ -5,12 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { backgroundColor } from './common/utils';
 
+import { BrowserRouter } from 'react-router-dom';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <div style={{backgroundColor: backgroundColor, width: '100vw', height: '100vh'}}>
+    <BrowserRouter>
       <App />
-    </div>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

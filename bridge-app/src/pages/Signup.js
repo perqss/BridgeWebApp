@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { inputLabelProps, inputProps } from '../components/MaterialComponentsCss';
 
 
-const SignIn = (props) => {
+const Signup = (props) => {
 
   const navigate = useNavigate();
 
@@ -27,9 +27,9 @@ const SignIn = (props) => {
     }
   }, [props.user])
 
-  const login = () => {
-    props.login({ username: username, password: password });
-    navigate("/");
+  const signup = () => {
+	props.signup({ username: username, password: password });
+	navigate("/");
   }
 
   return (
@@ -57,8 +57,8 @@ const SignIn = (props) => {
           InputLabelProps={inputLabelProps}
         />
         <FormButton 
-          onClick={login}>
-          Login
+          onClick={signup}>
+          Signup
         </FormButton>
     </FormBox>
   }
@@ -66,4 +66,4 @@ const SignIn = (props) => {
   );
 };
 
-export default SignIn;
+export default Signup;

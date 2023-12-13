@@ -49,8 +49,9 @@ const Account = (props) => {
         return !(password === '');
     }
 
+    // TODO
     const handleSubmit = () => {
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = localStorage.getItem('user');
         if (values.oldPassword !== user?.password) {
             setSnackbarInfo({severity: 'error', message: 'Wrong old password'});
         } else if (values.newPasswordFirst !== values.newPasswordSecond) {
@@ -75,151 +76,151 @@ const Account = (props) => {
     }
   
     return (
-      <div
-        style={{
-            marginTop: '100px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
-        }}
-      >
-        <Dialog
-            open={openChangePasswordForm}
-            onClose={() => setOpenChangePasswordForm(false)}
-            
-        >   
-            <Box
+        <div
+            style={{
+                marginTop: '100px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+            }}
+        >
+            <Dialog
+                open={openChangePasswordForm}
+                onClose={() => setOpenChangePasswordForm(false)}
+                
+            >   
+                <Box
+                    sx={{
+                        backgroundColor: backgroundColor,
+                        border: '3px solid',
+                        borderColor: 'black'
+                    }}
+                >
+                    <DialogTitle
+                        sx={{
+                            color: 'white'
+                        }}
+                    >
+                        Change Password
+                    </DialogTitle>
+                    <FormBox
+                    >
+                        <FormTextField
+                            variant='outlined'
+                            name='oldPassword'
+                            label='enter old password'
+                            value={values.oldPassword}
+                            type='password'
+                            onChange={handleInputChange}
+                            InputLabelProps={inputLabelProps}
+                            InputProps={inputProps}
+                        />
+                    </FormBox>
+                    <FormBox
+                    >
+                        <FormTextField
+                            variant='outlined'
+                            name='newPasswordFirst'
+                            label='enter new password'
+                            value={values.newPasswordFirst}
+                            type='password'
+                            onChange={handleInputChange}
+                            InputLabelProps={inputLabelProps}
+                            InputProps={inputProps}
+                        />
+                    </FormBox>
+                    <FormBox
+                    >
+                        <FormTextField
+                            variant='outlined'
+                            name='newPasswordSecond'
+                            label='enter new password again'
+                            value={values.newPasswordSecond}
+                            type='password'
+                            onChange={handleInputChange}
+                            InputLabelProps={inputLabelProps}
+                            InputProps={inputProps}
+                        />
+                    </FormBox>
+                    <FormButton
+                        sx={{
+                            width: '100%',
+                            borderRadius: 0,
+                        }}
+                        onClick={handleSubmit}
+                    >
+                        Submit
+                    </FormButton>
+                </Box>
+            </Dialog>
+            <Avatar 
+                alt="User Avatar" 
+                src={avatarImage} 
+                sx={{width: 300, 
+                    height: 300, 
+                    marginBottom: 2,}}
+            />
+            <input
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="avatar-upload-input"
+              type="file"
+              onChange={handleFileChange}
+            />
+            <Paper
                 sx={{
-                    backgroundColor: backgroundColor,
-                    border: '3px solid',
-                    borderColor: 'black'
+                    marginTop: 1,
+                    backgroundColor: mainColor,
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 50,
+                    width: 200,
                 }}
             >
-            <DialogTitle
-                sx={{
-                    color: 'white'
-                }}
+            {localStorage.getItem('user')}
+            </Paper>
+            <label 
+                htmlFor="avatar-upload-input"
             >
-                Change Password
-            </DialogTitle>
-            <FormBox
-            >
-                <FormTextField
-                    variant='outlined'
-                    name='oldPassword'
-                    label='enter old password'
-                    value={values.oldPassword}
-                    type='password'
-                    onChange={handleInputChange}
-                    InputLabelProps={inputLabelProps}
-                    InputProps={inputProps}
-                />
-            </FormBox>
-            <FormBox
-            >
-                <FormTextField
-                    variant='outlined'
-                    name='newPasswordFirst'
-                    label='enter new password'
-                    value={values.newPasswordFirst}
-                    type='password'
-                    onChange={handleInputChange}
-                    InputLabelProps={inputLabelProps}
-                    InputProps={inputProps}
-                />
-            </FormBox>
-            <FormBox
-            >
-                <FormTextField
-                    variant='outlined'
-                    name='newPasswordSecond'
-                    label='enter new password again'
-                    value={values.newPasswordSecond}
-                    type='password'
-                    onChange={handleInputChange}
-                    InputLabelProps={inputLabelProps}
-                    InputProps={inputProps}
-                />
-            </FormBox>
+                <FormButton 
+                    component="span"
+                    sx={{
+                        width: 200,
+                        height: 50
+                    }}
+                >
+                 Upload Avatar
+                </FormButton>
+            </label>
             <FormButton
                 sx={{
-                    width: '100%',
-                    borderRadius: 0,
+                    width: 200,
+                    height: 50,
                 }}
-                onClick={handleSubmit}
+                onClick={handleChangePassword}
             >
-                Submit
+                Change password
             </FormButton>
-            </Box>
-        </Dialog>
-        <Avatar 
-            alt="User Avatar" 
-            src={avatarImage} 
-            sx={{width: 300, 
-                height: 300, 
-                marginBottom: 2,}}
-        />
-        <input
-          accept="image/*"
-          style={{ display: 'none' }}
-          id="avatar-upload-input"
-          type="file"
-          onChange={handleFileChange}
-        />
-        <Paper
-            sx={{
-                marginTop: 1,
-                backgroundColor: mainColor,
-                color: 'white',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: 50,
-                width: 200,
-            }}
-        >
-            {JSON.parse(localStorage.getItem('user'))?.username}
-        </Paper>
-        <label 
-            htmlFor="avatar-upload-input"
-        >
-        <FormButton 
-            component="span"
-            sx={{
-                width: 200,
-                height: 50
-            }}
-        >
-         Upload Avatar
-        </FormButton>
-        </label>
-          <FormButton
-            sx={{
-                width: 200,
-                height: 50,
-            }}
-            onClick={handleChangePassword}
-          >
-            Change password
-          </FormButton>
-          <Snackbar
-            open={openSnackbar}
-            autoHideDuration={3000}
-            onClose={onCloseSnackbar}
-          >
-            <Alert
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={3000}
                 onClose={onCloseSnackbar}
-                severity={snackbarInfo.severity}
-                variant='filled'
-                sx={{
-                width: '100%'
-                }}
             >
-                {snackbarInfo.message}
-            </Alert>
-        </Snackbar>
-      </div>
+                <Alert
+                    onClose={onCloseSnackbar}
+                    severity={snackbarInfo.severity}
+                    variant='filled'
+                    sx={{
+                    width: '100%'
+                    }}
+                >
+                    {snackbarInfo.message}
+                </Alert>
+            </Snackbar>
+        </div>
     );
   };
 
