@@ -110,6 +110,24 @@ function App() {
                   <Signup signup={signup} />
               }
             />
+            <Route
+              path='/choose-tournament'
+              element={
+                <div>
+                  <TopBar/>
+                  <ChooseTournament/>
+                </div>
+              }
+            />
+            <Route
+              path='/tournaments/:tournamentName'
+              element={
+                <div>
+                  <TopBar/>
+                  <Tournament/>
+                </div>
+              }
+            />
           </Routes>
         </div>
         <BottomNavigation className="text-center text-lg-start bg-light text-muted mt-4">
