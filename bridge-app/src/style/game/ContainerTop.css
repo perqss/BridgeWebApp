@@ -1,0 +1,21 @@
+#ContainerTop {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+#TopLeftCorner {
+    width: 10%;
+    background-color: rgb(167, 105, 13);
+}
+
+#HandNorth {
+    width: 80%;
+    background-color: rgb(160, 170, 69);
+}
+
+#TopRightCorner {
+    width: 10%;
+    background-color: rgb(167, 105, 13);
+}
