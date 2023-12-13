@@ -6,6 +6,13 @@ class Hand {
 
     constructor(cards: Array<Card>) {
         this.cards = cards
+        this.cards.sort(function (a, b) {
+            if (a.suit < b.suit || (a.suit === b.suit && a.rank >= b.rank)) {
+                return -1
+            } else {
+                return 1;
+            }
+        })
     }
 
     playCard(playRestrictions: PlayRestrictions) {
