@@ -20,7 +20,8 @@
 }
 
 #Table {
-    width: 80%;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,7 +34,6 @@
 }
 
 #TableRectangle {
-    background-color: green;
     width: 80%;
     height: 70%;
     border: 15px solid yellow;
@@ -126,5 +126,4 @@
 #VerticalPlaceHolder.bottom {
     margin-bottom: -20px;
 }
-
 
