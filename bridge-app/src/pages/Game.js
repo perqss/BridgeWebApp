@@ -21,19 +21,21 @@ for (let i = 0; i < 13; i++) {
 
 
 const Game = () => {
-    const cardsSouth = hands.south.cards;
-    const cardsNorth = hands.north.cards;
-    const cardPlayedSouth = [];
+    let cardsSouth = hands.south.cards;
+    let cardsNorth = hands.north.cards;
+    let cardsNorthIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    let cardsComponentsNorth = [];
+    let cardPlayedSouth = [];
+    let cardDepth = 0;
 
-    const [updatedCardsSouth, updateCardsSouth] = useState(cardsSouth);
-    const [updatedCardsPlayedSouth, updateCardsPlayedSouth] = useState(cardPlayedSouth);
-    const [updatedCardsNorth, updateCardsNorth] = useState(cardsNorth);
+    // const [updatedCardsSouth, updateCardsSouth] = useState(cardsSouth);
+    // const [updatedCardsPlayedSouth, updateCardsPlayedSouth] = useState(cardPlayedSouth);
+    // const [updatedCardsNorth, updateCardsNorth] = useState(cardsNorth);
 
     useEffect(() => {
+        console.log('re render')
         const config = {
         type: Phaser.AUTO,
-        top: 0,
-        left: 0,
         width: '100%',
         height: '100%',
         scene: {
@@ -51,8 +53,10 @@ const Game = () => {
         }
 
         function create() {
-        const cardsSouth = this.add.group();
-        const cardsNorth = this.add.group();
+        // const cardsSouth = this.add.group();
+        // const cardsNorth = this.add.group();
+        // const cardsEast = this.add.group();
+        // const cardsWest = this.add.group();
         
         const fontSize = window.innerHeight * 0.15;
         this.add.rectangle(window.innerWidth / 2, window.innerHeight / 2, window.innerWidth * 0.8, window.innerHeight * 0.6, 0x00ff00);
@@ -93,59 +97,123 @@ const Game = () => {
         const E = this.add.text(window.innerWidth * 0.855, window.innerHeight * 0.595, 'E');
         E.angle = 90;
 
-        updatedCardsNorth.forEach((updatedCard, index) => {
-            const x = 50 + index * 120;
-            const y = 100;
+        const renderCardsNorth = (cards) => {
+            cardsNorth = cards;
+            console.log(cardsNorth);
+            cardsNorth.forEach((updatedCard, index) => {
+                const spacing = window.innerWidth * 0.055;
+                const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
+                    font: `${fontSize}px Arial`,
+                    fill: updatedCard.color,
+                    backgroundColor: '#ffffff',
+                });
+                card.setOrigin(0.5, 0.5);
+                card.setInteractive();
+                card.x = topLeft.x + topLeft.width / 2 + fontSize + index * spacing;
+                card.y = window.innerHeight * 0.2 / 2;
+                cardsComponentsNorth.push(card);
+                card.on('pointerdown', () => {
+                    playCard(this, card, window.innerWidth * 0.5, window.innerHeight * 0.4, index, spacing);
+                });
+            })
+        }
+        renderCardsNorth(cardsNorth);
+        cardsSouth.forEach((updatedCard, index) => {
             const spacing = window.innerWidth * 0.055;
-
             const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
                 font: `${fontSize}px Arial`,
                 fill: updatedCard.color,
+                backgroundColor: '#ffffff',
             });
 
             card.setOrigin(0.5, 0.5);
             card.setInteractive();
             card.on('pointerdown', () => {
-                flipCard(this, card);
-            });
-            card.x = topLeft.x + topLeft.width / 2 + fontSize + index * spacing;
-            card.y = window.innerHeight * 0.15 / 2;
-            cardsNorth.add(card);
-        })
-
-        updatedCardsSouth.forEach((updatedCard, index) => {
-            const x = 50 + index * 120;
-            const y = 100;
-            const spacing = window.innerWidth * 0.055;
-            console.log(spacing)
-            const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
-                font: `${fontSize}px Arial`,
-                fill: updatedCard.color,
-            });
-
-            card.setOrigin(0.5, 0.5);
-            card.setInteractive();
-            card.on('pointerdown', () => {
-                flipCard(this, card);
+                playCard(this, card, window.innerWidth * 0.5, window.innerHeight * 0.6);
             });
             card.x = topLeft.x + topLeft.width / 2 + fontSize + index * spacing;
             card.y = window.innerHeight * 0.9;
-            cardsSouth.add(card);
+            //cardsSouth.add(card);
         })
 
-        function flipCard(scene, card) {
-            // Your flip logic here
-            const newX = 500/* set the new x-coordinate */;
-            const newY = 500/* set the new y-coordinate */;
+        cardBacks.forEach((updatedCard, index) => {
+            const spacing = window.innerWidth * 0.033;
+            const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
+                font: `${fontSize/ 1.5}px Arial`,
+                fill: updatedCard.color,
+                backgroundColor: '#ffffff',
+            });
+            card.angle = 90;
+            card.setOrigin(0.5, 0.5);
+            card.setInteractive();
+            card.on('pointerdown', () => {
+                playCard(this, card, window.innerWidth * 0.45, window.innerHeight * 0.5);
+            });
+            card.x = topLeft.x + topLeft.width / 4;
+            card.y = window.innerHeight * 0.08 + index * spacing;
+        })
+
+        cardBacks.forEach((updatedCard, index) => {
+            const spacing = window.innerWidth * 0.033;
+            const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
+                font: `${fontSize/ 1.5}px Arial`,
+                fill: updatedCard.color,
+                backgroundColor: '#ffffff',
+            });
+            card.angle = 90;
+            card.setOrigin(0.5, 0.5);
+            card.setInteractive();
+            card.on('pointerdown', () => {
+                playCard(this, card, window.innerWidth * 0.55, window.innerHeight * 0.5);
+            });
+            card.x = topRight.x - topRight.width / 4;
+            card.y = window.innerHeight * 0.08 + index * spacing;
+        })
+
+        const updateCardPositions = (cardsArray, initialX, xOffset, initialY, yOffset) => {
+            cardsArray.forEach((card, newIndex) => {
+              const newX = initialX + newIndex * xOffset;
+              const newY = initialY + yOffset;
           
+              // Use another tween to move the remaining cards to their new positions
+              this.tweens.add({
+                targets: card,
+                x: newX,
+                y: newY,
+                duration: 200, // Adjust the duration as needed
+                ease: 'Power2',
+              });
+            });
+        };
+
+        const handleRemove = (index, xOffset) => {
+            cardsComponentsNorth.splice(cardsNorthIndices[index] , 1);
+            for (let i = index + 1; i < cardsNorthIndices.length; i++) {
+                cardsNorthIndices[i] -= 1;
+            }
+            console.log(cardsComponentsNorth, cardsNorthIndices)
+            updateCardPositions(cardsComponentsNorth, topLeft.x + topLeft.width / 2 + fontSize, xOffset, window.innerHeight * 0.2 / 2, 0);
+        }
+
+        function playCard(scene, card, x, y, index, xOffset) {
+            // Your flip logic here
             // Use Tween to smoothly move the card to the new position
+            card.setStyle({
+                font: `${fontSize}px Arial`,
+            });
+            card.angle = 0;
             scene.tweens.add({
               targets: card,
-              x: newX,
-              y: newY,
-              duration: 500, // adjust the duration as needed
+              x: x,
+              y: y,
+              duration: 200, // adjust the duration as needed
               ease: 'Power2',
+              onComplete: () => {
+                card.setDepth(cardDepth++);
+                handleRemove(index, xOffset);
+              }
             });
+            
         }
         }
     }, []); // Empty dependency array to ensure the effect runs only once
