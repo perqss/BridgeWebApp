@@ -49,20 +49,20 @@ const Account = (props) => {
         return !(password === '');
     }
 
-    // TODO
     const handleSubmit = () => {
         const user = localStorage.getItem('user');
-        if (values.oldPassword !== user?.password) {
-            setSnackbarInfo({severity: 'error', message: 'Wrong old password'});
-        } else if (values.newPasswordFirst !== values.newPasswordSecond) {
+        if (values.newPasswordFirst !== values.newPasswordSecond) {
             setSnackbarInfo({severity: 'error', message: 'Passwords do not match'});
         } else if (!checkNewPassword(values.newPasswordFirst)) {
             setSnackbarInfo({severity: 'error', message: 'New password cannot be empty'});
         } else {
-            setSnackbarInfo({severity: 'success', message: 'Successfully changed the password'});
+            const response = props.changePassword({ username: user, password: values.oldPassword,
+                new_password: values.newPasswordFirst });
+            setSnackbarInfo(props.error == '' ? {severity: 'success', message: 'Successfully changed the password'} :
+                {severity: 'error', message: props.error});
             setOpenChangePasswordForm(false);
-            user.password = values.newPasswordFirst;
-            localStorage.setItem('user', JSON.stringify(user));
+            // user.password = values.newPasswordFirst; 
+            // localStorage.setItem('user', JSON.stringify(user));
         }
         setOpenSnackbar(true);
     }
