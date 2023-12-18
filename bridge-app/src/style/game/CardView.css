@@ -1,6 +1,9 @@
 .CardView {
-  font-size: 100px;
   margin: 0;
   padding: 0;
-  margin-left: 10%;
+  /* width: 1000px;
+  height: 500px;
+  max-width: 50px;
+  max-height: 50px; */
+  font-size: clamp(1px, 6vw, 100px);
 }

@@ -70,7 +70,6 @@ function App() {
 
   return (
     <div>
-        <TopBar/>
         <div className="container mt-4"> 
           <Routes>
             <Route path='/game' element={<Game/>}/>
@@ -99,6 +98,7 @@ function App() {
               path='/game-mode'
               element={
                 <div>
+                  <TopBar/>
                   <GameMode/>
                 </div>
               }
@@ -107,6 +107,7 @@ function App() {
               path='/account'
               element={
                 <div>
+                  <TopBar/>
                   <Account
                     count={count}
                     setCount={setCount}
@@ -117,7 +118,11 @@ function App() {
             <Route
               path='/signup'
               element={
+                <div>
+                  <TopBar/>
                   <Signup signup={signup} />
+                </div>
+                  
               }
             />
             <Route

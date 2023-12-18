@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import * as Phaser from 'phaser';
 import {Dealer} from '../common/deck/dealer';
 import {CardView} from '../components/CardView';
 import {Card} from '../common/deck/card';
@@ -18,151 +19,206 @@ for (let i = 0; i < 13; i++) {
   cardBacks.push(cardBack);
 }
 
+
 const Game = () => {
-  console.log("Deal");
-  console.log(hands.north);
-  console.log(hands.south);
-  console.log(hands.west);
-  console.log(hands.west);
-  console.log("----");
+    let cardsSouth = hands.south.cards;
+    let cardsNorth = hands.north.cards;
+    let cardsNorthIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    let cardsComponentsNorth = [];
+    let cardPlayedSouth = [];
+    let cardDepth = 0;
 
-  const cardsSouth = hands.south.cards;
-  const cardsNorth = hands.north.cards;
-  const cardPlayedSouth = [];
+    // const [updatedCardsSouth, updateCardsSouth] = useState(cardsSouth);
+    // const [updatedCardsPlayedSouth, updateCardsPlayedSouth] = useState(cardPlayedSouth);
+    // const [updatedCardsNorth, updateCardsNorth] = useState(cardsNorth);
 
-  const [updatedCardsSouth, updateCardsSouth] = useState(cardsSouth);
-  const [updatedCardsPlayedSouth, updateCardsPlayedSouth] = useState(cardPlayedSouth);
-  const [updatedCardsNorth, updateCardsNorth] = useState(cardsNorth);
+    useEffect(() => {
+        console.log('re render')
+        const config = {
+        type: Phaser.AUTO,
+        width: '100%',
+        height: '100%',
+        scene: {
+            preload: preload,
+            create: create,
+        },
+        transparent: true,
+        parent: 'Table',
+        };
 
-  function handleRemove(id) {
-    const newCardsPlayedSouth = updatedCardsSouth.filter((card) => card.id === id);
-    const newCardsSouth = updatedCardsSouth.filter((card) => card.id !== id);
-  
-    updateCardsSouth(newCardsSouth);
-    updateCardsPlayedSouth(newCardsPlayedSouth);
-  }
+        const game = new Phaser.Game(config);
 
-  return (
-    <div id="GameTopContainer">
-      <div id="LeftSplit">
-        <div id="ContainerTop">
-          <div id="TopLeftCorner">
-          </div>
-          <ul id="HandSouthNorth">
-            {updatedCardsNorth.map((card, index) => (
-              <li 
-                onClick={() => handleRemove(card.id)}
-                key={index}
-              >
-              <CardView 
-                id={card.id}
-                color={card.color} 
-              />
-              </li>))}
-          </ul>
-          <div id="TopRightCorner">
-          </div>
-        </div>
-        <div id="ContainerMiddle">
-          <div id="HandWest">
-          {cardBacks.map((card, index) => (
-                <li 
-                  onClick={() => handleRemove(card.id)}
-                  key={index}
-                >
-                <CardView 
-                  id={card.id}
-                  color={card.color}
-                  rotate='rotate(90deg)'
-                  marginTop='-40px'
-                  fontSize='55px'
-                />
-                </li>))}
-          </div>
-          <div id="Table">
-            <ul id="CardPlayedSouth">
-              {updatedCardsPlayedSouth.map((card, index) => (
-              <li key={index}>
-              <CardView 
-                id={card.id}
-              />
-              </li>))}
-            </ul>
-            <div id="TableRectangle">
-              <div className='center'>
-                <div 
-                  id="VerticalPlaceHolder"
-                >
-                  <div id="InnerVerticalPlaceHolder">
-                    N
-                  </div>
-                  <div id="VerticalPlaceHolderText">
-                    username
-                  </div>
-                </div>
-              </div>
-              <div id="SidePlaceHolders">
-                <div id="SidePlaceHolder">
-                  <div id="InnerSidePlaceHolder">
-                    W
-                  </div>
-                  <div id="SidePlaceHolderText">
-                    username
-                  </div>
-                </div>
-                <div 
-                  id="SidePlaceHolder"
-                  className="right"
-                >
-                  <div id="InnerSidePlaceHolder">
-                    E
-                  </div>
-                  <div id="SidePlaceHolderText">
-                    username
-                  </div>
-                </div>
-              </div>
-              <div className='center'>
-                <div 
-                  id="VerticalPlaceHolder"
-                  className="bottom"
-                >
-                  <div id="InnerVerticalPlaceHolder">
-                    S
-                  </div>
-                  <div id="VerticalPlaceHolderText">
-                    username
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div id="HandEast">
-          </div>
-        </div>
-        <div id="ContainerDown">
-          <div id="DownLeftCorner">
-          </div>
-          <ul id="HandSouthNorth">
-            {updatedCardsSouth.map((card, index) => (
-            <li 
-              onClick={() => handleRemove(card.id)}
-              key={index}
-            >
-            <CardView 
-              id={card.id}
-              color={card.color} 
-            />
-            </li>))}
-          </ul>
-          <div id="DownRightCorner">
-          </div>
-        </div>
-      </div>
-      <div id="RightSplit">
-      </div>
-    </div>
-  )
+        function preload() {
+        // No need to preload anything in this case
+        }
+
+        function create() {
+        // const cardsSouth = this.add.group();
+        // const cardsNorth = this.add.group();
+        // const cardsEast = this.add.group();
+        // const cardsWest = this.add.group();
+        
+        const fontSize = window.innerHeight * 0.15;
+        this.add.rectangle(window.innerWidth / 2, window.innerHeight / 2, window.innerWidth * 0.8, window.innerHeight * 0.6, 0x00ff00);
+        this.add.rectangle(window.innerWidth / 2, 0, window.innerWidth * 0.8, window.innerHeight * 0.4, Phaser.Display.Color.GetColor(160, 170, 69));
+        this.add.rectangle(window.innerWidth / 2, window.innerHeight, window.innerWidth * 0.8, window.innerHeight * 0.4, Phaser.Display.Color.GetColor(160, 170, 69));
+        const topLeft = this.add.rectangle(0, 0, window.innerWidth * 0.2, window.innerHeight * 0.4, Phaser.Display.Color.GetColor(167, 105, 13));
+        const topRight = this.add.rectangle(window.innerWidth, 0, window.innerWidth * 0.2, window.innerHeight * 0.4, Phaser.Display.Color.GetColor(167, 105, 13));
+        const bottomLeft = this.add.rectangle(0, window.innerHeight, window.innerWidth * 0.2, window.innerHeight * 0.4, Phaser.Display.Color.GetColor(167, 105, 13));
+        const Right = this.add.rectangle(window.innerWidth, window.innerHeight, window.innerWidth * 0.2, window.innerHeight * 0.4, Phaser.Display.Color.GetColor(167, 105, 13));
+        const middleLeft = this.add.rectangle(window.innerWidth * 0.05, window.innerHeight * 0.5, window.innerWidth * 0.1, window.innerHeight * 0.6, Phaser.Display.Color.GetColor(160, 170, 69));
+        const middleRight = this.add.rectangle(window.innerWidth * 0.95, window.innerHeight * 0.5, window.innerWidth * 0.1, window.innerHeight * 0.6, Phaser.Display.Color.GetColor(160, 170, 69));
+        const middle = this.add.rectangle(window.innerWidth * 0.5, window.innerHeight * 0.5, window.innerWidth * 0.8, window.innerHeight * 0.6, 0x008000);
+        const graphics = this.add.graphics();
+
+        graphics.lineStyle(15, 0xffff00); // Line width and color
+        graphics.strokeRect(window.innerWidth * 0.15, window.innerHeight * 0.25, window.innerWidth * 0.7, window.innerHeight * 0.5);
+        const northPlayer = this.add.rectangle(window.innerWidth * 0.5, window.innerHeight * 0.25, window.innerWidth * 0.1, window.innerHeight * 0.05, Phaser.Display.Color.GetColor(24, 24, 24));
+        const north = this.add.rectangle(window.innerWidth * 0.45, window.innerHeight * 0.25, window.innerWidth * 0.02, window.innerHeight * 0.05, Phaser.Display.Color.GetColor(211, 10, 3));
+        this.add.text(window.innerWidth * 0.447, window.innerHeight * 0.24, 'N');
+        this.add.text(window.innerWidth * 0.48, window.innerHeight * 0.24, 'username');
+
+        const southPlayer = this.add.rectangle(window.innerWidth * 0.5, window.innerHeight * 0.75, window.innerWidth * 0.1, window.innerHeight * 0.05, Phaser.Display.Color.GetColor(24, 24, 24));
+        const south = this.add.rectangle(window.innerWidth * 0.45, window.innerHeight * 0.75, window.innerWidth * 0.02, window.innerHeight * 0.05, Phaser.Display.Color.GetColor(211, 10, 3));
+        this.add.text(window.innerWidth * 0.447, window.innerHeight * 0.74, 'S');
+        this.add.text(window.innerWidth * 0.48, window.innerHeight * 0.74, 'username');
+
+        const westPlayer = this.add.rectangle(window.innerWidth * 0.15, window.innerHeight * 0.5, window.innerHeight * 0.05, window.innerWidth * 0.1, Phaser.Display.Color.GetColor(24, 24, 24));
+        const west = this.add.rectangle(window.innerWidth * 0.15, window.innerHeight * 0.6, window.innerHeight * 0.05, window.innerWidth * 0.02, Phaser.Display.Color.GetColor(211, 10, 3));
+        const westText = this.add.text(window.innerWidth * 0.145, window.innerHeight * 0.55, 'username');
+        westText.angle = 270;
+        const W = this.add.text(window.innerWidth * 0.145, window.innerHeight * 0.605, 'W');
+        W.angle = 270;
+
+        const eastPlayer = this.add.rectangle(window.innerWidth * 0.85, window.innerHeight * 0.5, window.innerHeight * 0.05, window.innerWidth * 0.1, Phaser.Display.Color.GetColor(24, 24, 24));
+        const east = this.add.rectangle(window.innerWidth * 0.85, window.innerHeight * 0.6, window.innerHeight * 0.05, window.innerWidth * 0.02, Phaser.Display.Color.GetColor(211, 10, 3));
+        const eastText = this.add.text(window.innerWidth * 0.855, window.innerHeight * 0.45, 'username');
+        eastText.angle = 90;
+        const E = this.add.text(window.innerWidth * 0.855, window.innerHeight * 0.595, 'E');
+        E.angle = 90;
+
+        const renderCardsNorth = (cards) => {
+            cardsNorth = cards;
+            console.log(cardsNorth);
+            cardsNorth.forEach((updatedCard, index) => {
+                const spacing = window.innerWidth * 0.055;
+                const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
+                    font: `${fontSize}px Arial`,
+                    fill: updatedCard.color,
+                    backgroundColor: '#ffffff',
+                });
+                card.setOrigin(0.5, 0.5);
+                card.setInteractive();
+                card.x = topLeft.x + topLeft.width / 2 + fontSize + index * spacing;
+                card.y = window.innerHeight * 0.2 / 2;
+                cardsComponentsNorth.push(card);
+                card.on('pointerdown', () => {
+                    playCard(this, card, window.innerWidth * 0.5, window.innerHeight * 0.4, index, spacing);
+                });
+            })
+        }
+        renderCardsNorth(cardsNorth);
+        cardsSouth.forEach((updatedCard, index) => {
+            const spacing = window.innerWidth * 0.055;
+            const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
+                font: `${fontSize}px Arial`,
+                fill: updatedCard.color,
+                backgroundColor: '#ffffff',
+            });
+
+            card.setOrigin(0.5, 0.5);
+            card.setInteractive();
+            card.on('pointerdown', () => {
+                playCard(this, card, window.innerWidth * 0.5, window.innerHeight * 0.6);
+            });
+            card.x = topLeft.x + topLeft.width / 2 + fontSize + index * spacing;
+            card.y = window.innerHeight * 0.9;
+            //cardsSouth.add(card);
+        })
+
+        cardBacks.forEach((updatedCard, index) => {
+            const spacing = window.innerWidth * 0.033;
+            const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
+                font: `${fontSize/ 1.5}px Arial`,
+                fill: updatedCard.color,
+                backgroundColor: '#ffffff',
+            });
+            card.angle = 90;
+            card.setOrigin(0.5, 0.5);
+            card.setInteractive();
+            card.on('pointerdown', () => {
+                playCard(this, card, window.innerWidth * 0.45, window.innerHeight * 0.5);
+            });
+            card.x = topLeft.x + topLeft.width / 4;
+            card.y = window.innerHeight * 0.08 + index * spacing;
+        })
+
+        cardBacks.forEach((updatedCard, index) => {
+            const spacing = window.innerWidth * 0.033;
+            const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
+                font: `${fontSize/ 1.5}px Arial`,
+                fill: updatedCard.color,
+                backgroundColor: '#ffffff',
+            });
+            card.angle = 90;
+            card.setOrigin(0.5, 0.5);
+            card.setInteractive();
+            card.on('pointerdown', () => {
+                playCard(this, card, window.innerWidth * 0.55, window.innerHeight * 0.5);
+            });
+            card.x = topRight.x - topRight.width / 4;
+            card.y = window.innerHeight * 0.08 + index * spacing;
+        })
+
+        const updateCardPositions = (cardsArray, initialX, xOffset, initialY, yOffset) => {
+            cardsArray.forEach((card, newIndex) => {
+              const newX = initialX + newIndex * xOffset;
+              const newY = initialY + yOffset;
+          
+              // Use another tween to move the remaining cards to their new positions
+              this.tweens.add({
+                targets: card,
+                x: newX,
+                y: newY,
+                duration: 200, // Adjust the duration as needed
+                ease: 'Power2',
+              });
+            });
+        };
+
+        const handleRemove = (index, xOffset) => {
+            cardsComponentsNorth.splice(cardsNorthIndices[index] , 1);
+            for (let i = index + 1; i < cardsNorthIndices.length; i++) {
+                cardsNorthIndices[i] -= 1;
+            }
+            console.log(cardsComponentsNorth, cardsNorthIndices)
+            updateCardPositions(cardsComponentsNorth, topLeft.x + topLeft.width / 2 + fontSize, xOffset, window.innerHeight * 0.2 / 2, 0);
+        }
+
+        function playCard(scene, card, x, y, index, xOffset) {
+            // Your flip logic here
+            // Use Tween to smoothly move the card to the new position
+            card.setStyle({
+                font: `${fontSize}px Arial`,
+            });
+            card.angle = 0;
+            scene.tweens.add({
+              targets: card,
+              x: x,
+              y: y,
+              duration: 200, // adjust the duration as needed
+              ease: 'Power2',
+              onComplete: () => {
+                card.setDepth(cardDepth++);
+                handleRemove(index, xOffset);
+              }
+            });
+            
+        }
+        }
+    }, []); // Empty dependency array to ensure the effect runs only once
+
+    return <div id="phaser-game" />;
 };
 
 export default Game;
