@@ -19,12 +19,17 @@ for (let i = 0; i < 13; i++) {
   cardBacks.push(cardBack);
 }
 
-
 const Game = () => {
     let cardsSouth = hands.south.cards;
     let cardsNorth = hands.north.cards;
-    let cardsNorthIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    let cardsNorthIndices = [...Array(13).keys()];
+    let cardsSouthIndices = [...Array(13).keys()];
+    let cardsEastIndices = [...Array(13).keys()];
+    let cardsWestIndices = [...Array(13).keys()];
     let cardsComponentsNorth = [];
+    let cardsComponentsSouth = [];
+    let cardsComponentsEast = [];
+    let cardsComponentsWest = [];
     let cardPlayedSouth = [];
     let cardDepth = 0;
 
@@ -33,7 +38,6 @@ const Game = () => {
     // const [updatedCardsNorth, updateCardsNorth] = useState(cardsNorth);
 
     useEffect(() => {
-        console.log('re render')
         const config = {
         type: Phaser.AUTO,
         width: '100%',
@@ -98,8 +102,6 @@ const Game = () => {
         E.angle = 90;
 
         const renderCardsNorth = (cards) => {
-            cardsNorth = cards;
-            console.log(cardsNorth);
             cardsNorth.forEach((updatedCard, index) => {
                 const spacing = window.innerWidth * 0.055;
                 const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
@@ -113,7 +115,8 @@ const Game = () => {
                 card.y = window.innerHeight * 0.2 / 2;
                 cardsComponentsNorth.push(card);
                 card.on('pointerdown', () => {
-                    playCard(this, card, window.innerWidth * 0.5, window.innerHeight * 0.4, index, spacing);
+                    playCard(this, card, window.innerWidth * 0.5, window.innerHeight * 0.4, index, spacing, 0, cardsComponentsNorth, 
+                        cardsNorthIndices, topLeft.x + topLeft.width / 2 + fontSize, card.y);
                 });
             })
         }
@@ -128,12 +131,13 @@ const Game = () => {
 
             card.setOrigin(0.5, 0.5);
             card.setInteractive();
-            card.on('pointerdown', () => {
-                playCard(this, card, window.innerWidth * 0.5, window.innerHeight * 0.6);
-            });
             card.x = topLeft.x + topLeft.width / 2 + fontSize + index * spacing;
             card.y = window.innerHeight * 0.9;
-            //cardsSouth.add(card);
+            cardsComponentsSouth.push(card);
+            card.on('pointerdown', () => {
+                playCard(this, card, window.innerWidth * 0.5, window.innerHeight * 0.6, index, spacing, 0, cardsComponentsSouth, 
+                    cardsSouthIndices, topLeft.x + topLeft.width / 2 + fontSize, card.y);
+            });
         })
 
         cardBacks.forEach((updatedCard, index) => {
@@ -146,11 +150,13 @@ const Game = () => {
             card.angle = 90;
             card.setOrigin(0.5, 0.5);
             card.setInteractive();
-            card.on('pointerdown', () => {
-                playCard(this, card, window.innerWidth * 0.45, window.innerHeight * 0.5);
-            });
             card.x = topLeft.x + topLeft.width / 4;
             card.y = window.innerHeight * 0.08 + index * spacing;
+            cardsComponentsWest.push(card);
+            card.on('pointerdown', () => {
+                playCard(this, card, window.innerWidth * 0.45, window.innerHeight * 0.5, index, 0, spacing, cardsComponentsWest,
+                    cardsWestIndices, card.x, window.innerHeight * 0.08);
+            });
         })
 
         cardBacks.forEach((updatedCard, index) => {
@@ -163,17 +169,19 @@ const Game = () => {
             card.angle = 90;
             card.setOrigin(0.5, 0.5);
             card.setInteractive();
-            card.on('pointerdown', () => {
-                playCard(this, card, window.innerWidth * 0.55, window.innerHeight * 0.5);
-            });
             card.x = topRight.x - topRight.width / 4;
             card.y = window.innerHeight * 0.08 + index * spacing;
+            cardsComponentsEast.push(card);
+            card.on('pointerdown', () => {
+                playCard(this, card, window.innerWidth * 0.55, window.innerHeight * 0.5, index, 0, spacing, cardsComponentsEast,
+                    cardsEastIndices, card.x, window.innerHeight * 0.08);
+            });
         })
 
         const updateCardPositions = (cardsArray, initialX, xOffset, initialY, yOffset) => {
             cardsArray.forEach((card, newIndex) => {
               const newX = initialX + newIndex * xOffset;
-              const newY = initialY + yOffset;
+              const newY = initialY + newIndex * yOffset;
           
               // Use another tween to move the remaining cards to their new positions
               this.tweens.add({
@@ -186,31 +194,33 @@ const Game = () => {
             });
         };
 
-        const handleRemove = (index, xOffset) => {
-            cardsComponentsNorth.splice(cardsNorthIndices[index] , 1);
-            for (let i = index + 1; i < cardsNorthIndices.length; i++) {
-                cardsNorthIndices[i] -= 1;
+        const handleRemove = (index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY) => {
+            console.log(cardsComponents)
+            cardsComponents.splice(cardsIndices[index], 1);
+            for (let i = index + 1; i < cardsIndices.length; i++) {
+                cardsIndices[i] -= 1;
             }
-            console.log(cardsComponentsNorth, cardsNorthIndices)
-            updateCardPositions(cardsComponentsNorth, topLeft.x + topLeft.width / 2 + fontSize, xOffset, window.innerHeight * 0.2 / 2, 0);
+
+            updateCardPositions(cardsComponents, oldX, xOffset, oldY, yOffset);
         }
 
-        function playCard(scene, card, x, y, index, xOffset) {
+        function playCard(scene, card, newX, newY, index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY) {
             // Your flip logic here
             // Use Tween to smoothly move the card to the new position
+            console.log(cardsComponents, cardsIndices)
             card.setStyle({
                 font: `${fontSize}px Arial`,
             });
             card.angle = 0;
             scene.tweens.add({
               targets: card,
-              x: x,
-              y: y,
+              x: newX,
+              y: newY,
               duration: 200, // adjust the duration as needed
               ease: 'Power2',
               onComplete: () => {
                 card.setDepth(cardDepth++);
-                handleRemove(index, xOffset);
+                handleRemove(index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY);
               }
             });
             
