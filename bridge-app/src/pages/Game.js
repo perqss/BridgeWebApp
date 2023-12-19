@@ -204,7 +204,7 @@ const Game = () => {
             updateCardPositions(cardsComponents, oldX, xOffset, oldY, yOffset);
         }
 
-        function playCard(scene, card, newX, newY, index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY) {
+        const playCard = (scene, card, newX, newY, index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY) => {
             // Your flip logic here
             // Use Tween to smoothly move the card to the new position
             console.log(cardsComponents, cardsIndices)
