@@ -4,15 +4,18 @@ import {Dealer} from '../common/deck/dealer';
 import {CardView} from '../components/CardView';
 import {Card} from '../common/deck/card';
 import {Color} from '../common/deck/color';
+import {GameScheduler} from '../common/deck/game_scheduler';
 
 import '../style/game/GameTopContainer.css';
 import '../style/game/ContainerTop.css';
 import '../style/game/ContainerMiddle.css';
 import '../style/game/ContainerDown.css';
 import { backgroundColor } from '../common/utils';
+import { CardinalDirection } from '../common/deck/cardinal_directions';
 
 const dealer = new Dealer();
 const hands = dealer.deal();
+const gameScheduler = new GameScheduler();
 const cardBackId = 0x1F0A0;
 const cardBackColor = Color.black;
 
@@ -32,6 +35,7 @@ const Game = () => {
     let cardPlayedSouth = [];
     let cardDepth = 0;
 
+    gameScheduler.setLeadDirection(CardinalDirection.South)
     // const [updatedCardsSouth, updateCardsSouth] = useState(cardsSouth);
     // const [updatedCardsPlayedSouth, updateCardsPlayedSouth] = useState(cardPlayedSouth);
     // const [updatedCardsNorth, updateCardsNorth] = useState(cardsNorth);
@@ -114,8 +118,11 @@ const Game = () => {
                 card.y = window.innerHeight * 0.2 / 2;
                 cardsComponentsNorth.push(card);
                 card.on('pointerdown', () => {
-                    playCard(this, card, updatedCard, window.innerWidth * 0.5, window.innerHeight * 0.4, index, spacing, 0, cardsComponentsNorth, 
-                        cardsNorthIndices, topLeft.x + topLeft.width / 2 + fontSize, card.y);
+                    if (gameScheduler.getCurrentDirection() === CardinalDirection.North) {
+                        playCard(this, card, updatedCard, window.innerWidth * 0.5, window.innerHeight * 0.4, index, spacing, 0, cardsComponentsNorth, 
+                            cardsNorthIndices, topLeft.x + topLeft.width / 2 + fontSize, card.y)
+                        gameScheduler.setNextDirection();
+                    };
                 });
             })
         }
@@ -134,27 +141,12 @@ const Game = () => {
             card.y = window.innerHeight * 0.9;
             cardsComponentsSouth.push(card);
             card.on('pointerdown', () => {
-                playCard(this, card, updatedCard, window.innerWidth * 0.5, window.innerHeight * 0.6, index, spacing, 0, cardsComponentsSouth, 
-                    cardsSouthIndices, topLeft.x + topLeft.width / 2 + fontSize, card.y);
-            });
-        })
-
-        cardsEast.forEach((updatedCard, index) => {
-            const spacing = window.innerWidth * 0.033;
-            const card = this.add.text(0, 0, String.fromCodePoint(cardBackId), {
-                font: `${fontSize/ 1.5}px Arial`,
-                fill: cardBackColor,
-                backgroundColor: '#ffffff',
-            });
-            card.angle = 90;
-            card.setOrigin(0.5, 0.5);
-            card.setInteractive();
-            card.x = topLeft.x + topLeft.width / 4;
-            card.y = window.innerHeight * 0.08 + index * spacing;
-            cardsComponentsWest.push(card);
-            card.on('pointerdown', () => {
-                playCard(this, card, updatedCard, window.innerWidth * 0.45, window.innerHeight * 0.5, index, 0, spacing, cardsComponentsWest,
-                    cardsWestIndices, card.x, window.innerHeight * 0.08);
+                if (gameScheduler.getCurrentDirection() === CardinalDirection.South) {
+                    playCard(this, card, updatedCard, window.innerWidth * 0.5, window.innerHeight * 0.6, index, spacing, 0, cardsComponentsSouth, 
+                        cardsSouthIndices, topLeft.x + topLeft.width / 2 + fontSize, card.y);
+                    gameScheduler.setNextDirection();
+                    console.log(gameScheduler.getCurrentDirection());
+                }
             });
         })
 
@@ -168,12 +160,38 @@ const Game = () => {
             card.angle = 90;
             card.setOrigin(0.5, 0.5);
             card.setInteractive();
+            card.x = topLeft.x + topLeft.width / 4;
+            card.y = window.innerHeight * 0.08 + index * spacing;
+            cardsComponentsWest.push(card);
+            card.on('pointerdown', () => {
+                if (gameScheduler.getCurrentDirection() === CardinalDirection.West) {
+                    playCard(this, card, updatedCard, window.innerWidth * 0.45, window.innerHeight * 0.5, index, 0, spacing, cardsComponentsWest,
+                        cardsWestIndices, card.x, window.innerHeight * 0.08);
+                    gameScheduler.setNextDirection();
+                    console.log(gameScheduler.getCurrentDirection());
+                }
+            });
+        })
+
+        cardsEast.forEach((updatedCard, index) => {
+            const spacing = window.innerWidth * 0.033;
+            const card = this.add.text(0, 0, String.fromCodePoint(cardBackId), {
+                font: `${fontSize/ 1.5}px Arial`,
+                fill: cardBackColor,
+                backgroundColor: '#ffffff',
+            });
+            card.angle = 90;
+            card.setOrigin(0.5, 0.5);
+            card.setInteractive();
             card.x = topRight.x - topRight.width / 4;
             card.y = window.innerHeight * 0.08 + index * spacing;
             cardsComponentsEast.push(card);
             card.on('pointerdown', () => {
-                playCard(this, card, updatedCard, window.innerWidth * 0.55, window.innerHeight * 0.5, index, 0, spacing, cardsComponentsEast,
-                    cardsEastIndices, card.x, window.innerHeight * 0.08);
+                if (gameScheduler.getCurrentDirection() === CardinalDirection.East) {
+                    playCard(this, card, updatedCard, window.innerWidth * 0.55, window.innerHeight * 0.5, index, 0, spacing, cardsComponentsEast,
+                        cardsEastIndices, card.x, window.innerHeight * 0.08);
+                    gameScheduler.setNextDirection();
+                }
             });
         })
 
