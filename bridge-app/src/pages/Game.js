@@ -13,15 +13,14 @@ import { backgroundColor } from '../common/utils';
 
 const dealer = new Dealer();
 const hands = dealer.deal();
-const cardBack = new Card(undefined, undefined, 0x1F0A0, Color.black);
-const cardBacks = [];
-for (let i = 0; i < 13; i++) {
-  cardBacks.push(cardBack);
-}
+const cardBackId = 0x1F0A0;
+const cardBackColor = Color.black;
 
 const Game = () => {
     let cardsSouth = hands.south.cards;
     let cardsNorth = hands.north.cards;
+    let cardsEast = hands.east.cards;
+    let cardsWest = hands.west.cards;
     let cardsNorthIndices = [...Array(13).keys()];
     let cardsSouthIndices = [...Array(13).keys()];
     let cardsEastIndices = [...Array(13).keys()];
@@ -115,7 +114,7 @@ const Game = () => {
                 card.y = window.innerHeight * 0.2 / 2;
                 cardsComponentsNorth.push(card);
                 card.on('pointerdown', () => {
-                    playCard(this, card, window.innerWidth * 0.5, window.innerHeight * 0.4, index, spacing, 0, cardsComponentsNorth, 
+                    playCard(this, card, updatedCard, window.innerWidth * 0.5, window.innerHeight * 0.4, index, spacing, 0, cardsComponentsNorth, 
                         cardsNorthIndices, topLeft.x + topLeft.width / 2 + fontSize, card.y);
                 });
             })
@@ -135,16 +134,16 @@ const Game = () => {
             card.y = window.innerHeight * 0.9;
             cardsComponentsSouth.push(card);
             card.on('pointerdown', () => {
-                playCard(this, card, window.innerWidth * 0.5, window.innerHeight * 0.6, index, spacing, 0, cardsComponentsSouth, 
+                playCard(this, card, updatedCard, window.innerWidth * 0.5, window.innerHeight * 0.6, index, spacing, 0, cardsComponentsSouth, 
                     cardsSouthIndices, topLeft.x + topLeft.width / 2 + fontSize, card.y);
             });
         })
 
-        cardBacks.forEach((updatedCard, index) => {
+        cardsEast.forEach((updatedCard, index) => {
             const spacing = window.innerWidth * 0.033;
-            const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
+            const card = this.add.text(0, 0, String.fromCodePoint(cardBackId), {
                 font: `${fontSize/ 1.5}px Arial`,
-                fill: updatedCard.color,
+                fill: cardBackColor,
                 backgroundColor: '#ffffff',
             });
             card.angle = 90;
@@ -154,16 +153,16 @@ const Game = () => {
             card.y = window.innerHeight * 0.08 + index * spacing;
             cardsComponentsWest.push(card);
             card.on('pointerdown', () => {
-                playCard(this, card, window.innerWidth * 0.45, window.innerHeight * 0.5, index, 0, spacing, cardsComponentsWest,
+                playCard(this, card, updatedCard, window.innerWidth * 0.45, window.innerHeight * 0.5, index, 0, spacing, cardsComponentsWest,
                     cardsWestIndices, card.x, window.innerHeight * 0.08);
             });
         })
 
-        cardBacks.forEach((updatedCard, index) => {
+        cardsWest.forEach((updatedCard, index) => {
             const spacing = window.innerWidth * 0.033;
-            const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
+            const card = this.add.text(0, 0, String.fromCodePoint(cardBackId), {
                 font: `${fontSize/ 1.5}px Arial`,
-                fill: updatedCard.color,
+                fill: cardBackColor,
                 backgroundColor: '#ffffff',
             });
             card.angle = 90;
@@ -173,7 +172,7 @@ const Game = () => {
             card.y = window.innerHeight * 0.08 + index * spacing;
             cardsComponentsEast.push(card);
             card.on('pointerdown', () => {
-                playCard(this, card, window.innerWidth * 0.55, window.innerHeight * 0.5, index, 0, spacing, cardsComponentsEast,
+                playCard(this, card, updatedCard, window.innerWidth * 0.55, window.innerHeight * 0.5, index, 0, spacing, cardsComponentsEast,
                     cardsEastIndices, card.x, window.innerHeight * 0.08);
             });
         })
@@ -204,12 +203,13 @@ const Game = () => {
             updateCardPositions(cardsComponents, oldX, xOffset, oldY, yOffset);
         }
 
-        const playCard = (scene, card, newX, newY, index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY) => {
-            // Your flip logic here
+        const playCard = (scene, card, cardInfo, newX, newY, index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY) => {
             // Use Tween to smoothly move the card to the new position
             console.log(cardsComponents, cardsIndices)
+            card.setText(String.fromCodePoint(cardInfo.id))
             card.setStyle({
                 font: `${fontSize}px Arial`,
+                fill: cardInfo.color,
             });
             card.angle = 0;
             scene.tweens.add({
