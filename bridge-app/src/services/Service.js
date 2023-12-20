@@ -8,6 +8,9 @@ class Service {
 	signup(data) {
 		return axios.post("http://localhost:8000/api/signup/", data); 
 	}
+	changePassword(data) {
+		return axios.post("http://localhost:8000/api/change-password/", data); 
+	}
 
 }
 
