@@ -34,6 +34,8 @@ const Game = () => {
     let cardsComponentsWest = [];
     let cardPlayedSouth = [];
     let cardDepth = 0;
+    let countNS = 0;
+    let countEW = 0;
 
     gameScheduler.setLeadDirection(CardinalDirection.South)
     // const [updatedCardsSouth, updateCardsSouth] = useState(cardsSouth);
@@ -103,6 +105,16 @@ const Game = () => {
         eastText.angle = 90;
         const E = this.add.text(window.innerWidth * 0.855, window.innerHeight * 0.595, 'E');
         E.angle = 90;
+
+        const counterEWText = this.add.text(window.innerWidth * 0.8, window.innerHeight * 0.7, `EW: ${countEW}`, {
+          font: `${fontSize / 7}px Arial`,
+          color: 'orange',
+        });
+
+        const counterNSText = this.add.text(window.innerWidth * 0.17, window.innerHeight * 0.7, `NS: ${countNS}`, {
+          font: `${fontSize / 7}px Arial`,
+          color: 'orange',
+        });
 
         const renderCardsNorth = (cards) => {
             cardsNorth.forEach((updatedCard, index) => {
