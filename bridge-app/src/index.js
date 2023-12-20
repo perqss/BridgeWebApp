@@ -10,7 +10,9 @@ import { BrowserRouter } from 'react-router-dom';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-      <App style={{backgroundColor: 'black', height: '100vh', width: '100vw'}}/>
+      <div id='MainContainer' style={{backgroundColor: backgroundColor, width: '100vw', height: '100vh'}}>
+        <App/>
+      </div>
     </BrowserRouter>
 );
 

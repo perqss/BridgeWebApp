@@ -77,6 +77,7 @@ function App() {
               path='/' 
               element={
                 <div>
+                  <TopBar/>
                   <SignIn
                     user={user}
                     login={login}

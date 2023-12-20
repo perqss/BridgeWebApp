@@ -47,7 +47,7 @@ const Game = () => {
             create: create,
         },
         transparent: true,
-        parent: 'Table',
+        parent: 'MainContainer',
         };
 
         const game = new Phaser.Game(config);
@@ -225,6 +225,10 @@ const Game = () => {
             });
             
         }
+        }
+
+        return () => {
+          game.destroy(true);
         }
     }, []); // Empty dependency array to ensure the effect runs only once
 

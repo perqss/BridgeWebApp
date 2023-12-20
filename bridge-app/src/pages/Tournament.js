@@ -4,7 +4,7 @@ import MuiPagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography'
 import { backgroundColor } from '../common/utils';
 import { Header, FormButton } from '../components/MaterialComponentsCss';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const columns = [
     { field: 'id', headername: 'id', hide: true},
@@ -27,6 +27,7 @@ const rows = [
 const Tournament = () => {
 
   const [data, setData] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const sortedRows = rows.slice().sort((a, b) => b.points - a.points);
@@ -36,7 +37,7 @@ const Tournament = () => {
   const tournamentName = useParams().tournamentName;
   return (
     <div style={{ height: '100vh', width: '100vw', marginTop: '60px', display: 'flex', flexDirection: 'column'}}>
-        <div className='div-center'>
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
             <Header
                 text={tournamentName}
             />
@@ -44,6 +45,7 @@ const Tournament = () => {
                 sx={{
                     marginBottom: '20px'
                 }}
+                onClick={() => navigate('/game')}
             >
                 Play Next Deal
             </FormButton>
