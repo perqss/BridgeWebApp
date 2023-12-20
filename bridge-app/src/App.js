@@ -39,6 +39,14 @@ function App() {
       setError(e.toString()); 
     });
   }
+  async function changePassword(user = null) {
+      Service.changePassword(user).then(response => {
+        setError('');
+      }).catch(e => {
+        console.log('change password', e);
+        setError(e.response.data.error);
+      });
+  }
   async function logout() { 
     setToken('');
     setUser(''); 
@@ -111,6 +119,8 @@ function App() {
                   <Account
                     count={count}
                     setCount={setCount}
+                    changePassword={changePassword}
+                    error={error}
                   />
                 </div>
               }
