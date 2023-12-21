@@ -3,7 +3,8 @@ enum CardinalDirection {
     West,
     North,
     East,
-    None
+    Waiting,
+    None,
 }
 
 export {CardinalDirection}
