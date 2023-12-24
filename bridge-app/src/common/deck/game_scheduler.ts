@@ -53,6 +53,14 @@ class GameScheduler {
         return false
     }
 
+    processAuction(direction: CardinalDirection) {
+        if (this.current_direction === direction) {
+            this.setNextDirection();
+            return true;
+        }
+        return false;
+    }
+
     processSpacePressed() {
         if (this.current_direction === CardinalDirection.Waiting) {
             let first_suit = this.card_info_in_trick[0].suit

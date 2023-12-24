@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import GameBoard from '../components/GameBoard';
 import { backgroundColor, lightBlue } from '../common/utils';
 import { FormButton } from '../components/MaterialComponentsCss';
 import { Paper, Button, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
-import SuitList from '../components/SuitList';
+import AuctionCardList from '../components/AuctionCardList';
 import { Suit } from '../common/deck/suit';
 import { Card } from '../common/deck/card';
 import { Rank } from '../common/deck/rank';
@@ -20,74 +20,76 @@ const CustomPaper = ({ divInside }) => {
     )
 }
 
-const fillWithCards = (cards, suit) => {
+const fillWithCards = (setCards, suit) => {
+    const result = [];
     for (let i = 1; i <= 7; ++i) {
         if (suit === Suit.Hearts) {
-            cards.push(new Card(Suit.Hearts, i, 0x2660, Color.red));
+            result.push(new Card(Suit.Hearts, i, 0x2665, Color.red));
+        } else if (suit === Suit.Clubs) {
+            result.push(new Card(Suit.Clubs, i, 0x2663, lightBlue));
+        } else if (suit === Suit.Diamonds) {
+            result.push(new Card(Suit.Diamonds, i, 0x2666, 'orange'));
+        } else if (suit === Suit.Spades) {
+            result.push(new Card(Suit.Spades, i, 0x2660, 'grey'));
+        } else if (suit === Suit.NoTrump) {
+            result.push(new Card(Suit.NoTrump, i, 'NT', 'white'));
         }
     }
+    setCards(result);
 }
 
 const Game = () => {
-  const [option, setOption] = useState();
-  const [BAs, setBAs] = useState(['1 BA', '2 BA', '3 BA', '4 BA', '5 BA', '6 BA', '7 BA']);
-  const [hearts, setHearts] = useState(['1 ♥', '2 ♥', '3 ♥', '4 ♥', '5 ♥', '6 ♥', '7 ♥']);
-  const [diamonds, setDiamonds] = useState(['1 ♦', '2 ♦', '3 ♦', '4 ♦', '5 ♦', '6 ♦', '7 ♦']);
-  const [clubs, setClubs] = useState(['1 ♣', '2 ♣', '3 ♣', '4 ♣', '5 ♣', '6 ♣', '7 ♣']);
-  const [spades, setSpades] = useState(['1 ♠', '2 ♠', '3 ♠', '4 ♠', '5 ♠', '6 ♠' ,'7 ♠']);
+  const [NTs, setNTs] = useState([]);
+  const [hearts, setHearts] = useState([]);
+  const [diamonds, setDiamonds] = useState([]);
+  const [clubs, setClubs] = useState([]);
+  const [spades, setSpades] = useState([]);
   const players = ['S', 'W', 'N', 'E'];
-  const [cardsS, setCardsS] = useState([]);
-  const [cardsW, setCardsW] = useState([]);
-  const [cardsN, setCardsN] = useState([]);
-  const [cardsE, setCardsE] = useState([]);
+  const [cardsS, setCardsS] = useState([new Card()]);
+  const [cardsW, setCardsW] = useState([new Card()]);
+  const [cardsN, setCardsN] = useState([new Card()]);
+  const [cardsE, setCardsE] = useState([new Card()]);
+  const cards = [NTs, hearts, diamonds, clubs, spades];
+  const setCards = [setNTs, setHearts, setDiamonds, setClubs, setSpades];
+  const playerCards = [cardsS, cardsW, cardsN, cardsE];
+  const setPlayerCards = [setCardsS, setCardsW, setCardsN, setCardsE];
+  const directions = ['S', 'W', 'N', 'E'];
+
+  useEffect(() => {
+    fillWithCards(setHearts, Suit.Hearts);
+    fillWithCards(setDiamonds, Suit.Diamonds);
+    fillWithCards(setSpades, Suit.Spades);
+    fillWithCards(setClubs, Suit.Clubs);
+    fillWithCards(setNTs, Suit.NoTrump);
+  }, [])
 
   return (
     <div style={{display: 'flex', flexDirection: 'row', width: '100vw', height: '100vh', overflow: 'hidden'}}>
         <div id='GameContainer'>
-            <GameBoard option={option} setOption={setOption}/>
+            <GameBoard/>
         </div>
         <div style={{height: '100vh', width: '100vw', backgroundColor: backgroundColor, overflowY: 'scroll', display: 'flex', flexDirection: 'column'}}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                <CustomPaper
-                    divInside={
-                        <SuitList
-                            suits={BAs}
-                            suitColor={'white'}
-                        />
-                    }
-                />
-                <CustomPaper
-                    divInside={
-                        <SuitList
-                            suits={spades}
-                            suitColor={'grey'}
-                        />
-                    }
-                />
-                <CustomPaper
-                    divInside={
-                        <SuitList
-                            suits={hearts}
-                            suitColor={'red'}
-                        />
-                    }
-                />
-                <CustomPaper
-                    divInside={
-                        <SuitList
-                            suits={diamonds}
-                            suitColor={'orange'}
-                        />
-                    }
-                />
-                <CustomPaper
-                    divInside={
-                        <SuitList
-                            suits={clubs}
-                            suitColor={lightBlue}
-                        />
-                    }
-                />
+                {cards.map((cardsSuit, index) => 
+                    <CustomPaper
+                        key={index}
+                        divInside={
+                            <AuctionCardList
+                                cards={cardsSuit}
+                                suit={cards[index]}
+                                setSuit={setCards[index]}
+                                cardsS={cardsS}
+                                setCardsS={setCardsS}
+                                cardsN={cardsN}
+                                setCardsN={setCardsN}
+                                cardsW={cardsW}
+                                setCardsW={setCardsW}
+                                cardsE={cardsE}
+                                setCardsE={setCardsE}
+                            />
+                        }
+                    />
+                )}
             </div>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center'}}>
                 <Button sx={{backgroundColor: 'green', color: 'white'}}>
@@ -100,47 +102,19 @@ const Game = () => {
                     XX
                 </Button>
             </div>
-            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: '50px'}}>
-                <CustomPaper
-                    divInside={
-                        <SuitList
-                            suits={spades}
-                            suitColor={'grey'}
-                            players
-                            direction={'S'}
-                        />
-                    }
-                />
-                <CustomPaper
-                    divInside={
-                        <SuitList
-                            suits={hearts}
-                            suitColor={'red'}
-                            players
-                            direction={'W'}
-                        />
-                    }
-                />
-                <CustomPaper
-                    divInside={
-                        <SuitList
-                            suits={diamonds}
-                            suitColor={'orange'}
-                            players
-                            direction={'N'}
-                        />
-                    }
-                />
-                <CustomPaper
-                    divInside={
-                        <SuitList
-                            suits={clubs}
-                            suitColor={lightBlue}
-                            players
-                            direction={'E'}
-                        />
-                    }
-                />
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'start', marginTop: '50px'}}>
+                {playerCards.map((playerCard, index) => 
+                    <CustomPaper
+                        key={index}
+                        divInside={
+                            <AuctionCardList
+                                cards={playerCard}
+                                players
+                                direction={directions[index]}  
+                            />
+                        }
+                    />
+                )}
             </div>
         </div>
     </div>
