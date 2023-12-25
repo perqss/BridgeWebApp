@@ -197,6 +197,7 @@ const Game = () => {
                         key={index}
                         sx={{backgroundColor: bottomButtonsColors[index], color: 'white', margin: 0.5}}
                         onClick={() => handleBottomButtonsClick(buttonText, index)}
+                        disabled={auctionWinner !== undefined}
                     >
                         {buttonText}
                     </Button>
