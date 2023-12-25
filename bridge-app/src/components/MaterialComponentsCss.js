@@ -5,6 +5,8 @@ import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 import { mainColor } from '../common/utils';
 
 export const inputProps = {
@@ -48,6 +50,20 @@ const FormBox = styled(Box)(({ theme }) => ({
     flexDirection: 'column',
 }));
 
+const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
+  "&.Mui-disabled": {
+    color: 'orange !important',
+    boxShadow: 'none',
+  }
+}));
+
+const CustomListItemText = styled(ListItemText)(({ theme }) => ({
+  "&.Mui-disabled": {
+    
+    color: 'white !important',
+  }
+}));
+
 const FormButton = styled(Button)(({ theme }) => ({
     marginTop: 10, 
     backgroundColor: mainColor,
@@ -83,4 +99,4 @@ const Header = (props) => {
 }
 
 
-export {FormTextField, FormBox, FormButton, StyledAlert, ItemInfoButton, Header};
+export {FormTextField, FormBox, FormButton, StyledAlert, ItemInfoButton, Header, CustomListItemButton, CustomListItemText};

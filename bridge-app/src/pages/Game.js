@@ -8,12 +8,18 @@ import { Suit } from '../common/deck/suit';
 import { Card } from '../common/deck/card';
 import { Rank } from '../common/deck/rank';
 import { Color } from '../common/deck/color';
+import { CardinalDirection } from '../common/deck/cardinal_directions';
+import { GameScheduler } from '../common/deck/game_scheduler';
+import { TailSpin } from 'react-loader-spinner';
+
+const auctionScheduler = new GameScheduler();
+auctionScheduler.setLeadDirection(CardinalDirection.South);
 
 const CustomPaper = ({ divInside }) => {
     return (
         <Paper
             elevation={5}
-            sx={{backgroundColor: backgroundColor}}
+            sx={{backgroundColor: backgroundColor, margin: 0.5}}
         >
             {divInside}
         </Paper>
@@ -38,6 +44,8 @@ const fillWithCards = (setCards, suit) => {
     setCards(result);
 }
 
+export const bottomButtonsText = ['PASS', 'X', 'XX'];
+
 const Game = () => {
   const [NTs, setNTs] = useState([]);
   const [hearts, setHearts] = useState([]);
@@ -45,15 +53,47 @@ const Game = () => {
   const [clubs, setClubs] = useState([]);
   const [spades, setSpades] = useState([]);
   const players = ['S', 'W', 'N', 'E'];
-  const [cardsS, setCardsS] = useState([new Card()]);
-  const [cardsW, setCardsW] = useState([new Card()]);
-  const [cardsN, setCardsN] = useState([new Card()]);
-  const [cardsE, setCardsE] = useState([new Card()]);
+  const [cardsS, setCardsS] = useState([]);
+  const [cardsW, setCardsW] = useState([]);
+  const [cardsN, setCardsN] = useState([]);
+  const [cardsE, setCardsE] = useState([]);
+  const [clickedRank, setClickedRank] = useState();
+  const [showTailSpin, setShowTailSpin] = useState(true);
   const cards = [NTs, hearts, diamonds, clubs, spades];
   const setCards = [setNTs, setHearts, setDiamonds, setClubs, setSpades];
   const playerCards = [cardsS, cardsW, cardsN, cardsE];
   const setPlayerCards = [setCardsS, setCardsW, setCardsN, setCardsE];
   const directions = ['S', 'W', 'N', 'E'];
+  const bottomButtonsColors = ['green', 'red', lightBlue];
+
+  // TODO: Implement bot strategies during auction
+  const setCardAtScheduledDirection = (card) => {
+    console.log(CardinalDirection)
+    const setFunc = setPlayerCards[auctionScheduler.current_direction];
+    auctionScheduler.setNextDirection();
+    setFunc((prevCards) => [...prevCards, card]);
+  }
+
+  const handleBottomButtonsClick = (cardText, index) => {
+    const card = new Card(cardText, undefined, undefined, bottomButtonsColors[index]);
+    setCardAtScheduledDirection(card);
+  }
+
+  function deepCopy(arr) {
+    return arr.map(element => Array.isArray(element) ? deepCopy(element) : {...element});
+  }
+
+  const hideCardsBelowRank = (rank) => {
+    setClickedRank(rank);
+    const cardsClone = deepCopy(cards);
+    for (let i = 0; i < cards.length; ++i) {
+        for (let j = 0; j < rank; ++j) {
+            cardsClone[i][j].color = backgroundColor;
+        }
+        const setFunc = setCards[i];
+        setFunc(cardsClone[i]);
+    }
+  }
 
   useEffect(() => {
     fillWithCards(setHearts, Suit.Hearts);
@@ -65,8 +105,11 @@ const Game = () => {
 
   return (
     <div style={{display: 'flex', flexDirection: 'row', width: '100vw', height: '100vh', overflow: 'hidden'}}>
+        {showTailSpin && <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '40vw'}}>
+                            <TailSpin/>
+                        </div>}
         <div id='GameContainer'>
-            <GameBoard/>
+            <GameBoard setShowTailSpin={setShowTailSpin}/>
         </div>
         <div style={{height: '100vh', width: '100vw', backgroundColor: backgroundColor, overflowY: 'scroll', display: 'flex', flexDirection: 'column'}}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
@@ -76,35 +119,28 @@ const Game = () => {
                         divInside={
                             <AuctionCardList
                                 cards={cardsSuit}
-                                suit={cards[index]}
-                                setSuit={setCards[index]}
-                                cardsS={cardsS}
-                                setCardsS={setCardsS}
-                                cardsN={cardsN}
-                                setCardsN={setCardsN}
-                                cardsW={cardsW}
-                                setCardsW={setCardsW}
-                                cardsE={cardsE}
-                                setCardsE={setCardsE}
+                                setCardAtScheduledDirection={setCardAtScheduledDirection}
+                                hideCardsBelowRank={hideCardsBelowRank}
+                                clickedRank={clickedRank}
                             />
                         }
                     />
                 )}
             </div>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center'}}>
-                <Button sx={{backgroundColor: 'green', color: 'white'}}>
-                    Pass
-                </Button>
-                <Button sx={{backgroundColor: 'red', color: 'white'}}>
-                    X
-                </Button>
-                <Button sx={{backgroundColor: lightBlue, color: 'white'}}>
-                    XX
-                </Button>
+                {bottomButtonsText.map((buttonText, index) => 
+                    <Button
+                        key={index}
+                        sx={{backgroundColor: bottomButtonsColors[index], color: 'white', margin: 0.5}}
+                        onClick={() => handleBottomButtonsClick(buttonText, index)}
+                    >
+                        {buttonText}
+                    </Button>
+                )}
             </div>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'start', marginTop: '50px'}}>
                 {playerCards.map((playerCard, index) => 
-                    <CustomPaper
+                    <CustomPaper 
                         key={index}
                         divInside={
                             <AuctionCardList
