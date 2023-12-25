@@ -78,7 +78,8 @@ const Game = () => {
         passCount.current = 0;
         lastCard.current = card;
     }
-
+    const setFunc = setPlayerCards[auctionScheduler.current_direction];
+    setFunc((prevCards) => [...prevCards, card]);
     // TODO: Change conditions for the auction winner (they're probably not right)
     if (passCount.current === 3) {
         setAuctionWinner(lastCard.current);
@@ -88,11 +89,9 @@ const Game = () => {
     if (card.rank === 7) {
         setAuctionWinner(card);
         setShowSnackbar(true);
+        return;
     }
-
-    const setFunc = setPlayerCards[auctionScheduler.current_direction];
     auctionScheduler.setNextDirection();
-    setFunc((prevCards) => [...prevCards, card]);
   }
 
   const handleBottomButtonsClick = (cardText, index) => {
