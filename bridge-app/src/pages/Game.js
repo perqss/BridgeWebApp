@@ -111,7 +111,7 @@ const Game = () => {
         <div id='GameContainer'>
             <GameBoard setShowTailSpin={setShowTailSpin}/>
         </div>
-        <div style={{height: '100vh', width: '100vw', backgroundColor: backgroundColor, overflowY: 'scroll', display: 'flex', flexDirection: 'column'}}>
+        <div style={{height: '100vh', width: '30vw', backgroundColor: backgroundColor, overflowY: 'scroll', display: 'flex', flexDirection: 'column'}}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                 {cards.map((cardsSuit, index) => 
                     <CustomPaper

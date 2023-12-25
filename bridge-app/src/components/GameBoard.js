@@ -50,8 +50,8 @@ const GameBoard = ({ setShowTailSpin }) => {
         setShowTailSpin(false);
         const config = {
             type: Phaser.AUTO,
-            width: '70%',
-            height: '100%',
+            width: window.innerWidth * 0.7,
+            height: window.innerHeight,
             scene: {
                 preload: preload,
                 create: create,
