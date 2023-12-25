@@ -50,20 +50,6 @@ const FormBox = styled(Box)(({ theme }) => ({
     flexDirection: 'column',
 }));
 
-const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
-  "&.Mui-disabled": {
-    color: 'orange !important',
-    boxShadow: 'none',
-  }
-}));
-
-const CustomListItemText = styled(ListItemText)(({ theme }) => ({
-  "&.Mui-disabled": {
-    
-    color: 'white !important',
-  }
-}));
-
 const FormButton = styled(Button)(({ theme }) => ({
     marginTop: 10, 
     backgroundColor: mainColor,
@@ -99,4 +85,4 @@ const Header = (props) => {
 }
 
 
-export {FormTextField, FormBox, FormButton, StyledAlert, ItemInfoButton, Header, CustomListItemButton, CustomListItemText};
+export {FormTextField, FormBox, FormButton, StyledAlert, ItemInfoButton, Header};

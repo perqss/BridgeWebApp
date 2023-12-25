@@ -5,18 +5,9 @@ import { CardinalDirection } from '../common/deck/cardinal_directions';
 import { GameScheduler } from '../common/deck/game_scheduler';
 import { Card } from '../common/deck/card';
 import { bottomButtonsText } from '../pages/Game';
-import { CustomListItemButton } from './MaterialComponentsCss';
-import { CustomListItemText } from './MaterialComponentsCss';
 
 
-const styles = theme => ({
-    disabledButton: {
-     color: 'white'
-    }
-  });
-
-
-const AuctionCardList = ({ cards, players, direction, setCardAtScheduledDirection, hideCardsBelowRank, clickedRank }) => {
+const AuctionCardList = ({ cards, players, direction, setCardAtScheduledDirection, hideCardsBelowRank, clickedRank, auctionWinner }) => {
 
   const renderCardText = (card) => {
     if (bottomButtonsText.includes(card.suit)) {
@@ -37,7 +28,7 @@ const AuctionCardList = ({ cards, players, direction, setCardAtScheduledDirectio
     }
   }
 
-  const isDisabled = (index) => index + 1 <= clickedRank || players;
+  const isDisabled = (index) => index + 1 <= clickedRank || players || auctionWinner !== undefined;
     
   return (
     <List>

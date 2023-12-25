@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import * as Phaser from 'phaser';
 import {Dealer} from '../common/deck/dealer';
 import {CardView} from './CardView';
@@ -16,14 +16,15 @@ import { CardinalDirection } from '../common/deck/cardinal_directions';
 const dealer = new Dealer();
 const hands = dealer.deal();
 const gameScheduler = new GameScheduler();
+gameScheduler.setLeadDirection(CardinalDirection.South);
 const cardBackId = 0x1F0A0;
 const cardBackColor = Color.black;
 
-const GameBoard = ({ setShowTailSpin }) => {
-    let cardsSouth = hands.south.cards;
-    let cardsNorth = hands.north.cards;
-    let cardsEast = hands.east.cards;
-    let cardsWest = hands.west.cards;
+const GameBoard = ({ setShowTailSpin, auctionWinner }) => {
+    let cardsSouth = useRef(hands.south.cards).current;
+    let cardsNorth = useRef(hands.north.cards).current;
+    let cardsEast = useRef(hands.east.cards).current;
+    let cardsWest = useRef(hands.west.cards).current;
     let cardsNorthIndices = [...Array(13).keys()];
     let cardsSouthIndices = [...Array(13).keys()];
     let cardsEastIndices = [...Array(13).keys()];
@@ -32,56 +33,79 @@ const GameBoard = ({ setShowTailSpin }) => {
     let cardsComponentsSouth = [];
     let cardsComponentsEast = [];
     let cardsComponentsWest = [];
-    let cardPlayedSouth = [];
     let cardDepth = 0;
-    let countNS = 0;
-    let countEW = 0;
+    let countNS = useRef(0);
+    let countEW = useRef(0);
+    let cardPlayedNorth = useRef();
+    let cardPlayedSouth = useRef();
+    let cardPlayedWest = useRef();
+    let cardPlayedEast = useRef();
+    let cardsPlayed = [cardPlayedSouth, cardPlayedWest, cardPlayedNorth, cardPlayedEast];
     const width = window.innerWidth * 0.7;
     const height = window.innerHeight;
+    const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+    const [innerHeight, setInnerHeight] = useState(window.innerHeight);
+    //gameScheduler.setLeadDirection(CardinalDirection.South);
 
-    gameScheduler.setLeadDirection(CardinalDirection.South)
-    // const [updatedCardsSouth, updateCardsSouth] = useState(cardsSouth);
-    // const [updatedCardsPlayedSouth, updateCardsPlayedSouth] = useState(cardPlayedSouth);
-    // const [updatedCardsNorth, updateCardsNorth] = useState(cardsNorth);
     function processSpacePressed() {
         gameScheduler.processSpacePressed()
     }
+
     useEffect(() => {
+        const handleResize = () => {
+          setInnerWidth(window.innerWidth);
+          setInnerHeight(window.innerHeight);
+        };
+        window.addEventListener('resize', handleResize);
+    
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    }, []); 
+
+    useEffect(() => {
+        console.log(cardsSouth, countNS, countEW)
         setShowTailSpin(false);
         const config = {
             type: Phaser.AUTO,
-            width: window.innerWidth * 0.7,
-            height: window.innerHeight,
             scene: {
                 preload: preload,
                 create: create,
+                update: update,
+            },
+            scale: {
+                mode: Phaser.Scale.FIT,
+                width: window.innerWidth * 0.7,
+                height: window.innerHeight,
+                parent: 'GameContainer',
             },
             transparent: true,
-            parent: 'GameContainer',
         };
 
         const game = new Phaser.Game(config);
 
         function preload() {
-        // No need to preload anything in this case
+        }
+
+        function update() {
         }
 
         function create() {
-        // const cardsSouth = this.add.group();
-        // const cardsNorth = this.add.group();
-        // const cardsEast = this.add.group();
-        // const cardsWest = this.add.group();
         this.input.keyboard.on('keydown-' + 'SPACE', function (event) {
-            const whoTookTrick = gameScheduler.processSpacePressed()
+            const whoTookTrick = gameScheduler.processSpacePressed();
 
             if (whoTookTrick === CardinalDirection.East || whoTookTrick === CardinalDirection.West) {
-                countEW += 1;
-                counterEWText.setText(`EW: ${countEW}`);
+                countEW.current += 1;
+                counterEWText.setText(`EW: ${countEW.current}`);
             } else if (whoTookTrick === CardinalDirection.North || whoTookTrick === CardinalDirection.South) {
-                countNS += 1;
-                counterNSText.setText(`NS: ${countNS}`);
+                countNS.current += 1;
+                counterNSText.setText(`NS: ${countNS.current}`);
+            }
+            for (let i = 0; i < cardsPlayed.length; i++) {
+                cardsPlayed[i].current = undefined;
             }
         });
+
             
         const fontSize = (height + width) * 0.05;
         this.add.rectangle(width / 2, height / 2, width * 0.8, height * 0.6, 0x00ff00);
@@ -142,16 +166,17 @@ const GameBoard = ({ setShowTailSpin }) => {
         E.setOrigin(0.5);
         E.angle = 90;
 
-        const counterEWText = this.add.text(width * 0.78, height * 0.7, `EW: ${countEW}`, {
+        const counterEWText = this.add.text(width * 0.78, height * 0.7, `EW: ${countEW.current}`, {
           font: `${fontSize / 7}px Arial`,
           color: 'orange',
         });
 
-        const counterNSText = this.add.text(width * 0.18, height * 0.7, `NS: ${countNS}`, {
+        const counterNSText = this.add.text(width * 0.18, height * 0.7, `NS: ${countNS.current}`, {
           font: `${fontSize / 7}px Arial`,
           color: 'orange',
         });
 
+        // TODO: divide the rendering into functions
         cardsNorth.forEach((updatedCard, index) => {
             const spacing = topMiddle.width * 0.075;
             const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
@@ -163,11 +188,21 @@ const GameBoard = ({ setShowTailSpin }) => {
             card.setInteractive();
             card.x = topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05 + index * spacing;
             card.y = height * 0.2 / 2;
+            const xAfterClick = width * 0.466;
+            const yAfterClick = height * 0.38;
+            if (cardPlayedNorth.current !== undefined && index === 0) {
+                const playedCard = this.add.text(xAfterClick, yAfterClick, String.fromCodePoint(cardPlayedNorth.current.id), {
+                    font: `${fontSize}px Arial`,
+                    fill: cardPlayedNorth.current.color,
+                    backgroundColor: '#ffffff',
+                });
+                gameScheduler.cards_played_in_trick.push(playedCard);
+            }
             cardsComponentsNorth.push(card);
             card.on('pointerdown', () => {
                 if (gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.North)) {
                     playCard(this, card, updatedCard, width * 0.5, height * 0.4, index, spacing, 0, cardsComponentsNorth, 
-                        cardsNorthIndices, topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05, card.y)
+                        cardsNorthIndices, cardsNorth, topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05, card.y)
                 };
             });
         })
@@ -184,11 +219,21 @@ const GameBoard = ({ setShowTailSpin }) => {
             card.setInteractive();
             card.x = topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05 + index * spacing;
             card.y = height * 0.9;
+            const xAfterClick = width * 0.466;
+            const yAfterClick = height * 0.542;
+            if (cardPlayedSouth.current !== undefined && index === 0) {
+                const playedCard = this.add.text(xAfterClick, yAfterClick, String.fromCodePoint(cardPlayedSouth.current.id), {
+                    font: `${fontSize}px Arial`,
+                    fill: cardPlayedSouth.current.color,
+                    backgroundColor: '#ffffff',
+                });
+                gameScheduler.cards_played_in_trick.push(playedCard);
+            }
             cardsComponentsSouth.push(card);
             card.on('pointerdown', () => {
                 if (gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.South))  {
                     playCard(this, card, updatedCard, width * 0.5, height * 0.6, index, spacing, 0, cardsComponentsSouth, 
-                        cardsSouthIndices, topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05, card.y);
+                        cardsSouthIndices, cardsSouth, topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05, card.y);
                 }
             });
         })
@@ -205,11 +250,21 @@ const GameBoard = ({ setShowTailSpin }) => {
             card.setInteractive();
             card.x = topLeft.x + topLeft.width / 4;
             card.y = height * 0.08 + index * spacing + middleRight.height / 10;
+            const xAfterClick = width * 0.4;
+            const yAfterClick = height * 0.46;
+            if (cardPlayedWest.current !== undefined && index === 0) {
+                const playedCard = this.add.text(xAfterClick, yAfterClick, String.fromCodePoint(cardPlayedWest.current.id), {
+                    font: `${fontSize}px Arial`,
+                    fill: cardPlayedWest.current.color,
+                    backgroundColor: '#ffffff',
+                });
+                gameScheduler.cards_played_in_trick.push(playedCard);
+            }
             cardsComponentsWest.push(card);
             card.on('pointerdown', () => {
                 if (gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.West)) {
                     playCard(this, card, updatedCard, width * 0.45, height * 0.5, index, 0, spacing, cardsComponentsWest,
-                        cardsWestIndices, card.x, height * 0.08 + middleRight.height / 10);
+                        cardsWestIndices, cardsWest, card.x, height * 0.08 + middleRight.height / 10);
                 }
             });
         })
@@ -226,11 +281,21 @@ const GameBoard = ({ setShowTailSpin }) => {
             card.setInteractive();
             card.x = topRight.x - topRight.width / 4;
             card.y = height * 0.08 + index * spacing + middleRight.height / 10;
+            const xAfterClick = width * 0.53;
+            const yAfterClick = height * 0.46;
+            if (cardPlayedEast.current !== undefined && index === 0) {
+                const playedCard = this.add.text(xAfterClick, yAfterClick, String.fromCodePoint(cardPlayedEast.current.id), {
+                    font: `${fontSize}px Arial`,
+                    fill: cardPlayedEast.current.color,
+                    backgroundColor: '#ffffff',
+                });
+                gameScheduler.cards_played_in_trick.push(playedCard);
+            }
             cardsComponentsEast.push(card);
             card.on('pointerdown', () => {
                 if (gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.East)) {
                     playCard(this, card, updatedCard, width * 0.55, height * 0.5, index, 0, spacing, cardsComponentsEast,
-                        cardsEastIndices, card.x, height * 0.08 + middleRight.height / 10);
+                        cardsEastIndices, cardsEast, card.x, height * 0.08 + middleRight.height / 10);
                 }
             });
         })
@@ -251,8 +316,10 @@ const GameBoard = ({ setShowTailSpin }) => {
             });
         };
 
-        const handleRemove = (index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY) => {
+        const handleRemove = (index, xOffset, yOffset, cardsComponents, cardsIndices, originalCards, oldX, oldY) => {
             cardsComponents.splice(cardsIndices[index], 1);
+            originalCards.splice(index, 1);
+            console.log(originalCards)
             for (let i = index + 1; i < cardsIndices.length; i++) {
                 cardsIndices[i] -= 1;
             }
@@ -260,7 +327,7 @@ const GameBoard = ({ setShowTailSpin }) => {
             updateCardPositions(cardsComponents, oldX, xOffset, oldY, yOffset);
         }
 
-        const playCard = (scene, card, cardInfo, newX, newY, index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY) => {
+        const playCard = (scene, card, cardInfo, newX, newY, index, xOffset, yOffset, cardsComponents, cardsIndices, originalCards, oldX, oldY) => {
             // Use Tween to smoothly move the card to the new position
             card.setText(String.fromCodePoint(cardInfo.id))
             card.setStyle({
@@ -268,6 +335,7 @@ const GameBoard = ({ setShowTailSpin }) => {
                 fill: cardInfo.color,
             });
             card.angle = 0;
+            console.log(newX, newY)
             scene.tweens.add({
               targets: card,
               x: newX,
@@ -275,10 +343,12 @@ const GameBoard = ({ setShowTailSpin }) => {
               duration: 200, // adjust the duration as needed
               ease: 'Power2',
               onComplete: () => {
+                cardsPlayed[gameScheduler.current_direction - 1].current = cardInfo;
+                console.log(card.x, card.y)
                 card.setDepth(cardDepth++);
                 const found = cardsComponents.find(cardComponent => cardComponent === card);
                 if (found) {
-                  handleRemove(index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY);
+                  handleRemove(index, xOffset, yOffset, cardsComponents, cardsIndices, originalCards, oldX, oldY);
                 }
               }
             });
@@ -288,7 +358,7 @@ const GameBoard = ({ setShowTailSpin }) => {
         return () => {
           game.destroy(true);
         }
-    }, []); 
+    }, [auctionWinner, innerWidth, innerHeight]); 
 
     return <div id="phaser-game" />;
 };

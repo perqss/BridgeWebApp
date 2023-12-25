@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GameBoard from '../components/GameBoard';
 import { backgroundColor, lightBlue } from '../common/utils';
 import { FormButton } from '../components/MaterialComponentsCss';
-import { Paper, Button, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
+import { Paper, Button, Snackbar, Alert, Typography} from '@mui/material';
 import AuctionCardList from '../components/AuctionCardList';
 import { Suit } from '../common/deck/suit';
 import { Card } from '../common/deck/card';
@@ -59,6 +59,10 @@ const Game = () => {
   const [cardsE, setCardsE] = useState([]);
   const [clickedRank, setClickedRank] = useState();
   const [showTailSpin, setShowTailSpin] = useState(true);
+  const passCount = useRef(0);
+  const lastCard = useRef();
+  const [auctionWinner, setAuctionWinner] = useState();
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const cards = [NTs, hearts, diamonds, clubs, spades];
   const setCards = [setNTs, setHearts, setDiamonds, setClubs, setSpades];
   const playerCards = [cardsS, cardsW, cardsN, cardsE];
@@ -68,7 +72,24 @@ const Game = () => {
 
   // TODO: Implement bot strategies during auction
   const setCardAtScheduledDirection = (card) => {
-    console.log(CardinalDirection)
+    if (card.suit === bottomButtonsText[0]) {
+        passCount.current++;
+    } else {
+        passCount.current = 0;
+        lastCard.current = card;
+    }
+
+    // TODO: Change conditions for the auction winner (they're probably not right)
+    if (passCount.current === 3) {
+        setAuctionWinner(lastCard.current);
+        setShowSnackbar(true);
+    }
+
+    if (card.rank === 7) {
+        setAuctionWinner(card);
+        setShowSnackbar(true);
+    }
+
     const setFunc = setPlayerCards[auctionScheduler.current_direction];
     auctionScheduler.setNextDirection();
     setFunc((prevCards) => [...prevCards, card]);
@@ -103,13 +124,55 @@ const Game = () => {
     fillWithCards(setNTs, Suit.NoTrump);
   }, [])
 
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setShowSnackbar(false);
+  };
+
+  const parseCurrentDirection = () => {
+    if (auctionScheduler.current_direction === CardinalDirection.South) {
+        return 'S';
+    } else if (auctionScheduler.current_direction === CardinalDirection.North) {
+        return 'N';
+    } else if (auctionScheduler.current_direction === CardinalDirection.East) {
+        return 'E';
+    } else if (auctionScheduler.current_direction === CardinalDirection.West) {
+        return 'W';
+    }
+  }
+
   return (
     <div style={{display: 'flex', flexDirection: 'row', width: '100vw', height: '100vh', overflow: 'hidden'}}>
+        <div>
+            <Snackbar
+                open={showSnackbar}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                sx={{ height: "1%" }}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                }}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity='success'
+                    variant='filled'
+                >
+                    <Typography>
+                        {'End of the auction'}
+                    </Typography>
+                </Alert>
+            </Snackbar>
+        </div>
         {showTailSpin && <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '40vw'}}>
                             <TailSpin/>
                         </div>}
         <div id='GameContainer'>
-            <GameBoard setShowTailSpin={setShowTailSpin}/>
+            <GameBoard setShowTailSpin={setShowTailSpin} auctionWinner={auctionWinner}/>
         </div>
         <div style={{height: '100vh', width: '30vw', backgroundColor: backgroundColor, overflowY: 'scroll', display: 'flex', flexDirection: 'column'}}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
@@ -122,6 +185,7 @@ const Game = () => {
                                 setCardAtScheduledDirection={setCardAtScheduledDirection}
                                 hideCardsBelowRank={hideCardsBelowRank}
                                 clickedRank={clickedRank}
+                                auctionWinner={auctionWinner}
                             />
                         }
                     />
@@ -152,6 +216,21 @@ const Game = () => {
                     />
                 )}
             </div>
+            {auctionWinner && <Typography
+                className='center'
+                variant='h6'
+                sx={{marginTop: 2, color: 'white'}}
+            >
+                <div>
+                    {'Bid: '}
+                </div>
+                <div style={{color: auctionWinner.color, marginLeft: 5}}>
+                    {`${auctionWinner.rank} ${String.fromCodePoint(auctionWinner.id)}`}
+                </div>
+                <div style={{marginLeft: 5}}>
+                    {parseCurrentDirection()}
+                </div>
+            </Typography>}
         </div>
     </div>
   )
