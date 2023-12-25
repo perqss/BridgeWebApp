@@ -88,6 +88,9 @@ const GameBoard = ({ setShowTailSpin, auctionWinner }) => {
         }
 
         function update() {
+            const gameContainer = document.getElementById('GameContainer');
+            gameContainer.style.width = '70%';
+            gameContainer.style.height = '100%';
         }
 
         function create() {
@@ -358,7 +361,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner }) => {
         return () => {
           game.destroy(true);
         }
-    }, [auctionWinner, innerWidth, innerHeight]); 
+    }, [auctionWinner]); 
 
     return <div id="phaser-game" />;
 };
