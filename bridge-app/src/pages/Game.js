@@ -84,11 +84,13 @@ const Game = () => {
     if (passCount.current === 3) {
         setAuctionWinner(lastCard.current);
         setShowSnackbar(true);
+        setShowTailSpin(true);
     }
 
     if (card.rank === 7) {
         setAuctionWinner(card);
         setShowSnackbar(true);
+        setShowTailSpin(true);
         return;
     }
     auctionScheduler.setNextDirection();
