@@ -7,7 +7,7 @@ import { Card } from '../common/deck/card';
 import { bottomButtonsText } from '../pages/Game';
 
 
-const AuctionCardList = ({ cards, players, direction, setCardAtScheduledDirection, hideCardsBelowRank, clickedRank, auctionWinner }) => {
+const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCardAtScheduledDirection, hideCardsBelowRank, clickedRank, auctionWinner }) => {
 
   const renderCardText = (card) => {
     if (bottomButtonsText.includes(card.suit)) {
@@ -23,6 +23,7 @@ const AuctionCardList = ({ cards, players, direction, setCardAtScheduledDirectio
 
   const handleOnClick = (card) => {
     if (!players) {
+        modifyBiddingState();
         setCardAtScheduledDirection(card);
         hideCardsBelowRank(card.rank);
     }
