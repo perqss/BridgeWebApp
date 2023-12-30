@@ -62,8 +62,8 @@ const Game = () => {
   const [showTailSpin, setShowTailSpin] = useState(true);
   const passCount = useRef(0);
   const lastCard = useRef();
-  const biddingState = useRef(BiddingState.None)
-  const pairWithLastSignificantBid = useRef(BiddingPair.None)
+  const [biddingState, setBiddingState] = useState(BiddingState.None);
+  const [pairWithLastSignificantBid, setPairWithLastSignificantBid] = useState(BiddingPair.None);
   const [auctionWinner, setAuctionWinner] = useState();
   const [showSnackbar, setShowSnackbar] = useState(false);
   const cards = [clubs, diamonds, hearts, spades, NTs];
@@ -103,21 +103,18 @@ const Game = () => {
 
   const modifyBiddingStateOnBottomButtonsClick = (cardText, index) => {
     if (cardText === bottomButtonsText [1]) {
-        biddingState.current = BiddingState.Rekontrable
-        pairWithLastSignificantBid.current = getBiddingPair(auctionScheduler.getCurrentDirection())
+        setBiddingState(BiddingState.Rekontrable);
+        setPairWithLastSignificantBid(getBiddingPair(auctionScheduler.getCurrentDirection()));
     } else if (cardText === bottomButtonsText [2]) {
-        biddingState.current = BiddingState.None
-        pairWithLastSignificantBid.current = getBiddingPair(auctionScheduler.getCurrentDirection())
+        setBiddingState(BiddingState.None);
+        setPairWithLastSignificantBid(getBiddingPair(auctionScheduler.getCurrentDirection()));
     }
 
   }
 
   const modifyBiddingStateOnNormalCardClicked = () => {
-    biddingState.current = BiddingState.Kontrable
-    pairWithLastSignificantBid.current = getBiddingPair(auctionScheduler.getCurrentDirection())
-    console.log(biddingState.current)
-    console.log(pairWithLastSignificantBid.current)
-    console.log("modyfing")
+    setBiddingState(BiddingState.Kontrable);
+    setPairWithLastSignificantBid(getBiddingPair(auctionScheduler.getCurrentDirection()));
   }
 
   function deepCopy(arr) {
