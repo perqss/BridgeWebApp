@@ -11,6 +11,7 @@ import { Color } from '../common/deck/color';
 import { CardinalDirection } from '../common/deck/cardinal_directions';
 import { GameScheduler } from '../common/deck/game_scheduler';
 import { TailSpin } from 'react-loader-spinner';
+import { BiddingPair, BiddingState, getBiddingPair, getOppositeBiddingPair } from '../common/deck/bidding';
 
 const auctionScheduler = new GameScheduler();
 auctionScheduler.setLeadDirection(CardinalDirection.South);
@@ -61,13 +62,17 @@ const Game = () => {
   const [showTailSpin, setShowTailSpin] = useState(true);
   const passCount = useRef(0);
   const lastCard = useRef();
+  const [biddingState, setBiddingState] = useState(BiddingState.None);
+  const [pairWithLastSignificantBid, setPairWithLastSignificantBid] = useState(BiddingPair.None);
   const [auctionWinner, setAuctionWinner] = useState();
   const [showSnackbar, setShowSnackbar] = useState(false);
-  const cards = [NTs, hearts, diamonds, clubs, spades];
-  const setCards = [setNTs, setHearts, setDiamonds, setClubs, setSpades];
+  const cards = [clubs, diamonds, hearts, spades, NTs];
+  const setCards = [setClubs, setDiamonds, setHearts, setSpades, setNTs];
   const playerCards = [cardsS, cardsW, cardsN, cardsE];
   const setPlayerCards = [setCardsS, setCardsW, setCardsN, setCardsE];
   const directions = ['S', 'W', 'N', 'E'];
+
+  
   const bottomButtonsColors = ['green', 'red', lightBlue];
 
   // TODO: Implement bot strategies during auction
@@ -87,18 +92,29 @@ const Game = () => {
         setShowTailSpin(true);
     }
 
-    if (card.rank === 7) {
-        setAuctionWinner(card);
-        setShowSnackbar(true);
-        setShowTailSpin(true);
-        return;
-    }
     auctionScheduler.setNextDirection();
   }
 
   const handleBottomButtonsClick = (cardText, index) => {
+    modifyBiddingStateOnBottomButtonsClick(cardText, index)
     const card = new Card(cardText, undefined, undefined, bottomButtonsColors[index]);
     setCardAtScheduledDirection(card);
+  }
+
+  const modifyBiddingStateOnBottomButtonsClick = (cardText, index) => {
+    if (cardText === bottomButtonsText [1]) {
+        setBiddingState(BiddingState.Rekontrable);
+        setPairWithLastSignificantBid(getBiddingPair(auctionScheduler.getCurrentDirection()));
+    } else if (cardText === bottomButtonsText [2]) {
+        setBiddingState(BiddingState.None);
+        setPairWithLastSignificantBid(getBiddingPair(auctionScheduler.getCurrentDirection()));
+    }
+
+  }
+
+  const modifyBiddingStateOnNormalCardClicked = () => {
+    setBiddingState(BiddingState.Kontrable);
+    setPairWithLastSignificantBid(getBiddingPair(auctionScheduler.getCurrentDirection()));
   }
 
   function deepCopy(arr) {
@@ -183,6 +199,7 @@ const Game = () => {
                         divInside={
                             <AuctionCardList
                                 cards={cardsSuit}
+                                modifyBiddingState={modifyBiddingStateOnNormalCardClicked}
                                 setCardAtScheduledDirection={setCardAtScheduledDirection}
                                 hideCardsBelowRank={hideCardsBelowRank}
                                 clickedRank={clickedRank}
@@ -198,7 +215,15 @@ const Game = () => {
                         key={index}
                         sx={{backgroundColor: bottomButtonsColors[index], color: 'white', margin: 0.5}}
                         onClick={() => handleBottomButtonsClick(buttonText, index)}
-                        disabled={auctionWinner !== undefined}
+                        disabled={! ((auctionWinner === undefined)
+                            && ((buttonText === bottomButtonsText [0])
+                             || (buttonText === bottomButtonsText [1]
+                             && getOppositeBiddingPair(auctionScheduler.getCurrentDirection()) === pairWithLastSignificantBid
+                             && biddingState === BiddingState.Kontrable)
+                             || (buttonText === bottomButtonsText [2]
+                             && getOppositeBiddingPair(auctionScheduler.getCurrentDirection()) === pairWithLastSignificantBid
+                             && biddingState === BiddingState.Rekontrable)  
+                            ))}
                     >
                         {buttonText}
                     </Button>
