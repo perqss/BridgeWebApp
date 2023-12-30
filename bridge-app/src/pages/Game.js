@@ -81,6 +81,8 @@ const Game = () => {
         passCount.current++;
     } else {
         passCount.current = 0;
+    }
+    if (!bottomButtonsText.includes(card.suit)) {
         lastCard.current = card;
     }
     const setFunc = setPlayerCards[auctionScheduler.current_direction];
