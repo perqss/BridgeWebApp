@@ -17,6 +17,7 @@ const dealer = new Dealer();
 const hands = dealer.deal();
 const cardBackId = 0x1F0A0;
 const cardBackColor = Color.black;
+let firstCardPlayed = false;
 
 const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
     let cardsSouth = hands.south.cards;
@@ -156,9 +157,9 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
         // TODO: divide the rendering into functions
         cardsNorth.forEach((updatedCard, index) => {
             const spacing = topMiddle.width * 0.075;
-            const card = this.add.text(0, 0, String.fromCodePoint(updatedCard.id), {
+            const card = this.add.text(0, 0, String.fromCodePoint(cardBackId), {
                 font: `${topMiddle.height / 3}px Arial`,
-                fill: updatedCard.color,
+                fill: cardBackColor,
                 backgroundColor: '#ffffff',
             });
             card.setOrigin(0.5, 0.5);
@@ -168,7 +169,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
             cardsComponentsNorth.push(card);
             card.on('pointerdown', () => {
                 if (auctionWinner !== undefined && gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.North)) {
-                    playCard(this, card, updatedCard, width * 0.5, height * 0.4, index, spacing, 0, cardsComponentsNorth, 
+                    playCard(this, card, updatedCard, width * 0.5, height * 0.4, index, spacing, 0, cardsComponentsNorth, cardsComponentsEast,
                         cardsNorthIndices, topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05, card.y)
                 };
             });
@@ -189,7 +190,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
             cardsComponentsSouth.push(card);
             card.on('pointerdown', () => {
                 if (auctionWinner !== undefined && gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.South))  {
-                    playCard(this, card, updatedCard, width * 0.5, height * 0.6, index, spacing, 0, cardsComponentsSouth, 
+                    playCard(this, card, updatedCard, width * 0.5, height * 0.6, index, spacing, 0, cardsComponentsSouth, cardsComponentsWest,
                         cardsSouthIndices, topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05, card.y);
                 }
             });
@@ -210,7 +211,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
             cardsComponentsWest.push(card);
             card.on('pointerdown', () => {
                 if (auctionWinner !== undefined && gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.West)) {
-                    playCard(this, card, updatedCard, width * 0.45, height * 0.5, index, 0, spacing, cardsComponentsWest,
+                    playCard(this, card, updatedCard, width * 0.45, height * 0.5, index, 0, spacing, cardsComponentsWest, cardsComponentsNorth,
                         cardsWestIndices, card.x, height * 0.08 + middleRight.height / 10);
                 }
             });
@@ -231,7 +232,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
             cardsComponentsEast.push(card);
             card.on('pointerdown', () => {
                 if (auctionWinner !== undefined && gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.East)) {
-                    playCard(this, card, updatedCard, width * 0.55, height * 0.5, index, 0, spacing, cardsComponentsEast,
+                    playCard(this, card, updatedCard, width * 0.55, height * 0.5, index, 0, spacing, cardsComponentsEast, cardsComponentsNorth,
                         cardsEastIndices, card.x, height * 0.08 + middleRight.height / 10);
                 }
             });
@@ -253,6 +254,27 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
             });
         };
 
+        const revealCards = (cardsComponents) => {
+            let cardInfo = []
+            if (gameScheduler.current_direction === CardinalDirection.North) {
+                cardInfo = cardsNorth
+            } else if (gameScheduler.current_direction === CardinalDirection.East) {
+                cardInfo = cardsEast
+            } else if (gameScheduler.current_direction === CardinalDirection.West) {
+                cardInfo = cardsWest
+            } else {
+                cardInfo = cardsNorth // so that if we have won bidding, we can see both N and S
+            }
+
+            cardsComponents.forEach((card, index) => {
+                card.setText(String.fromCodePoint(cardInfo[index].id))
+                card.setStyle({
+                    font: `${fontSize}px Arial`,
+                    fill: cardInfo[index].color,
+                });
+            })
+        }
+
         const handleRemove = (index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY) => {
             cardsComponents.splice(cardsIndices[index], 1);
             for (let i = index + 1; i < cardsIndices.length; i++) {
@@ -262,7 +284,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
             updateCardPositions(cardsComponents, oldX, xOffset, oldY, yOffset);
         }
 
-        const playCard = (scene, card, cardInfo, newX, newY, index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY) => {
+        const playCard = (scene, card, cardInfo, newX, newY, index, xOffset, yOffset, cardsComponents, nextCardsComponents, cardsIndices, oldX, oldY) => {
             // Use Tween to smoothly move the card to the new position
             card.setText(String.fromCodePoint(cardInfo.id))
             card.setStyle({
@@ -281,6 +303,11 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
                 const found = cardsComponents.find(cardComponent => cardComponent === card);
                 if (found) {
                   handleRemove(index, xOffset, yOffset, cardsComponents, cardsIndices, oldX, oldY);
+                }
+
+                if (!firstCardPlayed) {
+                    revealCards(nextCardsComponents)
+                    firstCardPlayed = true
                 }
               }
             });

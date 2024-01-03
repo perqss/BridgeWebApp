@@ -11,6 +11,10 @@ class GameScheduler {
     played_suit : Suit
     cards_played_in_trick : any[] = [] // TODO: card type????
     card_info_in_trick : Card[] = []
+    cardsNorth : any[] = []
+    cardsSouth : any[] = []
+    cardsEast : any[] = []
+    cardsWest : any[] = []
 
     constructor() {
         this.current_direction = CardinalDirection.None
@@ -108,6 +112,33 @@ class GameScheduler {
 
             return this.current_direction
         }
+    }
+
+    setCards(cardsNorth: any[], cardsSouth: any[], cardsEast: any[], cardsWest: any[]) {
+        this.cardsNorth = cardsNorth;
+        this.cardsSouth = cardsSouth;
+        this.cardsEast = cardsEast;
+        this.cardsWest = cardsWest;
+    }
+
+    getCards(direction: CardinalDirection) {
+        if (direction === CardinalDirection.North) {
+            return this.cardsNorth
+        }
+
+        if (direction === CardinalDirection.South) {
+            return this.cardsSouth
+        }
+
+        if (direction === CardinalDirection.East) {
+            return this.cardsEast
+        }
+
+        if (direction === CardinalDirection.West) {
+            return this.cardsWest
+        }
+
+        return []
     }
 }
 
