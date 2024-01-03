@@ -4,10 +4,9 @@ import { Suit } from '../common/deck/suit';
 import { CardinalDirection } from '../common/deck/cardinal_directions';
 import { GameScheduler } from '../common/deck/game_scheduler';
 import { Card } from '../common/deck/card';
-import { bottomButtonsText } from '../pages/Game';
+import { bottomButtonsText, getSuitBidPriority } from '../pages/Game';
 
-
-const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCardAtScheduledDirection, hideCardsBelowRank, clickedRank, auctionWinner }) => {
+const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCardAtScheduledDirection, hideCardsBelowRank, clickedSuitRank, auctionWinner }) => {
 
   const renderCardText = (card) => {
     if (bottomButtonsText.includes(card.suit)) {
@@ -25,11 +24,13 @@ const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCar
     if (!players) {
         modifyBiddingState();
         setCardAtScheduledDirection(card);
-        hideCardsBelowRank(card.rank);
+        hideCardsBelowRank(card.rank, card.suit);
     }
   }
 
-  const isDisabled = (index) => index + 1 <= clickedRank || players || auctionWinner !== undefined;
+  const isDisabled = (index, suit) => (index + 1 < clickedSuitRank[1]
+                                || (index + 1 === clickedSuitRank[1] && getSuitBidPriority(suit) <= getSuitBidPriority(clickedSuitRank[0])))
+                                || players || auctionWinner !== undefined;
     
   return (
     <List>
@@ -58,7 +59,7 @@ const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCar
                 :
                 <ListItemButton
                     onClick={() => handleOnClick(card)}
-                    disabled={isDisabled(index)}
+                    disabled={isDisabled(index, card.suit)}
                 >
                     <ListItemText 
                         primary={renderCardText(card)}
