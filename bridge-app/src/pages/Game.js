@@ -47,6 +47,28 @@ const fillWithCards = (setCards, suit) => {
 
 export const bottomButtonsText = ['PASS', 'X', 'XX'];
 
+export const getSuitBidPriority = (suit) => {
+    if (suit === Suit.Clubs) {
+        return 0;
+    }
+
+    if (suit === Suit.Diamonds) {
+        return 1;
+    }
+
+    if (suit === Suit.Hearts) {
+        return 2;
+    }
+
+    if (suit === Suit.Spades) {
+        return 3;
+    }
+
+    if (suit === Suit.NoTrump) {
+        return 4;
+    }
+  }
+
 const Game = () => {
   const [NTs, setNTs] = useState([]);
   const [hearts, setHearts] = useState([]);
@@ -58,7 +80,7 @@ const Game = () => {
   const [cardsW, setCardsW] = useState([]);
   const [cardsN, setCardsN] = useState([]);
   const [cardsE, setCardsE] = useState([]);
-  const [clickedRank, setClickedRank] = useState();
+  const [clickedSuitRank, setClickedSuitRank] = useState([getSuitBidPriority(Suit.Clubs), 0]);
   const [showTailSpin, setShowTailSpin] = useState(true);
   const passCount = useRef(0);
   const lastCard = useRef();
@@ -123,13 +145,19 @@ const Game = () => {
     return arr.map(element => Array.isArray(element) ? deepCopy(element) : {...element});
   }
 
-  const hideCardsBelowRank = (rank) => {
-    setClickedRank(rank);
+  const hideCardsBelowRank = (rank, suit) => {
+    setClickedSuitRank([suit, rank]);
+    const bound = rank - 1
     const cardsClone = deepCopy(cards);
     for (let i = 0; i < cards.length; ++i) {
-        for (let j = 0; j < rank; ++j) {
+        for (let j = 0; j < bound; ++j) {
             cardsClone[i][j].color = backgroundColor;
         }
+
+        if (getSuitBidPriority(suit) >= i) {
+            cardsClone[i][bound].color = backgroundColor;
+        }
+
         const setFunc = setCards[i];
         setFunc(cardsClone[i]);
     }
@@ -204,7 +232,7 @@ const Game = () => {
                                 modifyBiddingState={modifyBiddingStateOnNormalCardClicked}
                                 setCardAtScheduledDirection={setCardAtScheduledDirection}
                                 hideCardsBelowRank={hideCardsBelowRank}
-                                clickedRank={clickedRank}
+                                clickedSuitRank={clickedSuitRank}
                                 auctionWinner={auctionWinner}
                             />
                         }
