@@ -14,6 +14,7 @@ import { TailSpin } from 'react-loader-spinner';
 import { BiddingPair, BiddingState, getBiddingPair, getOppositeBiddingPair } from '../common/deck/bidding';
 
 const auctionScheduler = new GameScheduler();
+const gameScheduler = new GameScheduler();
 auctionScheduler.setLeadDirection(CardinalDirection.South);
 
 const CustomPaper = ({ divInside }) => {
@@ -105,12 +106,16 @@ const Game = () => {
         passCount.current = 0;
     }
     if (!bottomButtonsText.includes(card.suit)) {
+        // let's use auctionScheduler's lead direction as future auction winner (player)
+        auctionScheduler.setLeadDirection(auctionScheduler.current_direction)
         lastCard.current = card;
     }
     const setFunc = setPlayerCards[auctionScheduler.current_direction];
     setFunc((prevCards) => [...prevCards, card]);
     // TODO: Change conditions for the auction winner (they're probably not right)
     if (passCount.current === 3) {
+        // player who first plays card after bidding is finished is the one to the left from the auction winner
+        gameScheduler.setLeadDirection((auctionScheduler.lead_direction + 1) % 4)
         setAuctionWinner(lastCard.current);
         setShowSnackbar(true);
         setShowTailSpin(true);
@@ -219,7 +224,7 @@ const Game = () => {
                             <TailSpin/>
                         </div>}
         <div id='GameContainer'>
-            <GameBoard setShowTailSpin={setShowTailSpin} auctionWinner={auctionWinner}/>
+            <GameBoard setShowTailSpin={setShowTailSpin} auctionWinner={auctionWinner} gameScheduler={gameScheduler}/>
         </div>
         <div style={{height: '100vh', width: '30vw', backgroundColor: backgroundColor, overflowY: 'scroll', display: 'flex', flexDirection: 'column'}}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>

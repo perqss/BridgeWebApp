@@ -15,11 +15,10 @@ import { CardinalDirection } from '../common/deck/cardinal_directions';
 
 const dealer = new Dealer();
 const hands = dealer.deal();
-const gameScheduler = new GameScheduler();
 const cardBackId = 0x1F0A0;
 const cardBackColor = Color.black;
 
-const GameBoard = ({ setShowTailSpin, auctionWinner }) => {
+const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
     let cardsSouth = hands.south.cards;
     let cardsNorth = hands.north.cards;
     let cardsEast = hands.east.cards;
@@ -37,7 +36,6 @@ const GameBoard = ({ setShowTailSpin, auctionWinner }) => {
     let countEW = 0;
     const width = window.innerWidth * 0.7;
     const height = window.innerHeight;
-    gameScheduler.setLeadDirection(CardinalDirection.South);
 
     function processSpacePressed() {
         gameScheduler.processSpacePressed()
@@ -169,7 +167,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner }) => {
             card.y = height * 0.2 / 2;
             cardsComponentsNorth.push(card);
             card.on('pointerdown', () => {
-                if (gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.North)) {
+                if (auctionWinner !== undefined && gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.North)) {
                     playCard(this, card, updatedCard, width * 0.5, height * 0.4, index, spacing, 0, cardsComponentsNorth, 
                         cardsNorthIndices, topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05, card.y)
                 };
@@ -190,7 +188,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner }) => {
             card.y = height * 0.9;
             cardsComponentsSouth.push(card);
             card.on('pointerdown', () => {
-                if (gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.South))  {
+                if (auctionWinner !== undefined && gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.South))  {
                     playCard(this, card, updatedCard, width * 0.5, height * 0.6, index, spacing, 0, cardsComponentsSouth, 
                         cardsSouthIndices, topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05, card.y);
                 }
@@ -211,7 +209,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner }) => {
             card.y = height * 0.08 + index * spacing + middleRight.height / 10;
             cardsComponentsWest.push(card);
             card.on('pointerdown', () => {
-                if (gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.West)) {
+                if (auctionWinner !== undefined && gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.West)) {
                     playCard(this, card, updatedCard, width * 0.45, height * 0.5, index, 0, spacing, cardsComponentsWest,
                         cardsWestIndices, card.x, height * 0.08 + middleRight.height / 10);
                 }
@@ -232,7 +230,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner }) => {
             card.y = height * 0.08 + index * spacing + middleRight.height / 10;
             cardsComponentsEast.push(card);
             card.on('pointerdown', () => {
-                if (gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.East)) {
+                if (auctionWinner !== undefined && gameScheduler.processPlayedCard(updatedCard, card, CardinalDirection.East)) {
                     playCard(this, card, updatedCard, width * 0.55, height * 0.5, index, 0, spacing, cardsComponentsEast,
                         cardsEastIndices, card.x, height * 0.08 + middleRight.height / 10);
                 }
