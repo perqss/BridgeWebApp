@@ -21,8 +21,9 @@ const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCar
   }
 
   const handleOnClick = (card) => {
-    if (!players) {
+    if (!players && auctionWinner === undefined) {
         modifyBiddingState();
+        console.log("handleOnClick")
         setCardAtScheduledDirection(card);
         hideCardsBelowRank(card.rank, card.suit);
     }

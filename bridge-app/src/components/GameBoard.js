@@ -73,6 +73,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
 
         function create() {
         this.input.keyboard.on('keydown-' + 'SPACE', function (event) {
+            console.log("space input")
             const whoTookTrick = gameScheduler.processSpacePressed();
 
             if (whoTookTrick === CardinalDirection.East || whoTookTrick === CardinalDirection.West) {
