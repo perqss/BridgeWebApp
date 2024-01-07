@@ -120,7 +120,6 @@ const Game = () => {
         setShowSnackbar(true);
         setShowTailSpin(true);
     }
-    console.log("SETcARD")
     auctionScheduler.setNextDirection();
   }
 

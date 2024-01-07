@@ -48,11 +48,7 @@ class GameScheduler {
 
     setNextDirection() {
         this.current_direction = (this.current_direction + 1) % NumberOfPlayers
-        if (this.type === GameSchedulerType.Bid) {
-        console.log("setNextDirection: ")
-        console.log(this.type)
-        console.log(this.current_direction)
-        }
+
         if (this.type === GameSchedulerType.Play) { // TODO: to remove if play() works fine for playing bots
             return
         }
@@ -96,7 +92,6 @@ class GameScheduler {
             if (this.cards_played_in_trick.length === NumberOfPlayers) {
                 this.current_direction = CardinalDirection.Waiting
             } else {
-                console.log("processPlayedCard")
                 this.setNextDirection();
             }
 
@@ -108,7 +103,6 @@ class GameScheduler {
 
     processAuction(direction: CardinalDirection) {
         if (this.current_direction === direction) {
-            console.log("processAuction")
             this.setNextDirection();
             return true;
         }
@@ -119,8 +113,6 @@ class GameScheduler {
         if (this.type === GameSchedulerType.Bid) {
             return
         }
-
-        console.log("process")
 
         if (this.current_direction === CardinalDirection.Waiting) {
             let first_suit = this.card_info_in_trick[0].suit
