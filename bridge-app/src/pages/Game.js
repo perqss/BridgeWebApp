@@ -12,9 +12,10 @@ import { CardinalDirection } from '../common/deck/cardinal_directions';
 import { GameScheduler } from '../common/deck/game_scheduler';
 import { TailSpin } from 'react-loader-spinner';
 import { BiddingPair, BiddingState, getBiddingPair, getOppositeBiddingPair } from '../common/deck/bidding';
-
-const auctionScheduler = new GameScheduler();
-const gameScheduler = new GameScheduler();
+import { Bidder } from '../common/deck/bidder';
+import { GameSchedulerType } from '../common/deck/game_scheduler_type';
+const auctionScheduler = new GameScheduler(GameSchedulerType.Bid);
+const gameScheduler = new GameScheduler(GameSchedulerType.Play);
 auctionScheduler.setLeadDirection(CardinalDirection.South);
 
 const CustomPaper = ({ divInside }) => {
@@ -94,7 +95,6 @@ const Game = () => {
   const playerCards = [cardsS, cardsW, cardsN, cardsE];
   const setPlayerCards = [setCardsS, setCardsW, setCardsN, setCardsE];
   const directions = ['S', 'W', 'N', 'E'];
-
   
   const bottomButtonsColors = ['green', 'red', lightBlue];
 
@@ -120,7 +120,6 @@ const Game = () => {
         setShowSnackbar(true);
         setShowTailSpin(true);
     }
-
     auctionScheduler.setNextDirection();
   }
 
@@ -195,6 +194,14 @@ const Game = () => {
         return 'W';
     }
   }
+
+  const bidderW = new Bidder(handleBottomButtonsClick)
+  const bidderE = new Bidder(handleBottomButtonsClick)
+  const bidderN = new Bidder(handleBottomButtonsClick)
+
+  auctionScheduler.setPlayerW(bidderW)
+  auctionScheduler.setPlayerE(bidderE)
+  auctionScheduler.setPlayerN(bidderN)
 
   return (
     <div style={{display: 'flex', flexDirection: 'row', width: '100vw', height: '100vh', overflow: 'hidden'}}>
