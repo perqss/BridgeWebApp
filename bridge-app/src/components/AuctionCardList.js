@@ -4,16 +4,23 @@ import { Suit } from '../common/deck/suit';
 import { CardinalDirection } from '../common/deck/cardinal_directions';
 import { GameScheduler } from '../common/deck/game_scheduler';
 import { Card } from '../common/deck/card';
+import { Color } from '../common/deck/color';
 import { bottomButtonsText, getSuitBidPriority } from '../pages/Game';
+import { backgroundColor } from '../common/utils';
+
 
 const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCardAtScheduledDirection, hideCardsBelowRank, clickedSuitRank, auctionWinner }) => {
 
-  const renderCardText = (card) => {
+  const renderCardText = (card, index) => {
+    const emptyCard = new Card(undefined, undefined, undefined, backgroundColor);
+    const noTrumpCardEmpty = new Card(Suit.NoTrump, index + 1, 'NT', backgroundColor);
+    const noTrumpCardWhite = new Card(Suit.NoTrump, index + 1, 'NT', Color.white);
+
     if (bottomButtonsText.includes(card.suit)) {
         return card.suit;
-    } else if (card.suit === undefined) {
+    } else if (emptyCard.equals(card)) { // Value Object pattern
         return '';
-    } else if (card.suit === Suit.NoTrump) {
+    } else if (noTrumpCardEmpty.equals(card) || noTrumpCardWhite.equals(card)) {
         return `${card.rank} ${card.id}`;
     } else {
         return `${card.rank} ${String.fromCodePoint(card.id)}`;
@@ -53,7 +60,7 @@ const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCar
             >
                 {players ? 
                     <ListItemText 
-                        primary={renderCardText(card)}
+                        primary={renderCardText(card, index)}
                         primaryTypographyProps={{color: card.color, variant: 'h6', align: 'center'}}
                     />
                 :
@@ -62,7 +69,7 @@ const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCar
                     disabled={isDisabled(index, card.suit)}
                 >
                     <ListItemText 
-                        primary={renderCardText(card)}
+                        primary={renderCardText(card, index)}
                         primaryTypographyProps={{color: card.color}}
                     />
                 </ListItemButton>}

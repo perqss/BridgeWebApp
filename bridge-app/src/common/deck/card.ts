@@ -13,6 +13,10 @@ class Card {
         this.id = id;
         this.color = color;
     }
+
+    equals(other: Card) {
+        return this.suit === other.suit && this.rank === other.rank && this.id === other.id && this.color === other.color;
+    }
 }
 
 export {Card}

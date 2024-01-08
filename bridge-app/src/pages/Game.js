@@ -35,13 +35,13 @@ const fillWithCards = (setCards, suit) => {
         if (suit === Suit.Hearts) {
             result.push(new Card(Suit.Hearts, i, 0x2665, Color.red));
         } else if (suit === Suit.Clubs) {
-            result.push(new Card(Suit.Clubs, i, 0x2663, lightBlue));
+            result.push(new Card(Suit.Clubs, i, 0x2663, Color.blue));
         } else if (suit === Suit.Diamonds) {
-            result.push(new Card(Suit.Diamonds, i, 0x2666, 'orange'));
+            result.push(new Card(Suit.Diamonds, i, 0x2666, Color.orange));
         } else if (suit === Suit.Spades) {
-            result.push(new Card(Suit.Spades, i, 0x2660, 'grey'));
+            result.push(new Card(Suit.Spades, i, 0x2660, Color.grey));
         } else if (suit === Suit.NoTrump) {
-            result.push(new Card(Suit.NoTrump, i, 'NT', 'white'));
+            result.push(new Card(Suit.NoTrump, i, 'NT', Color.white));
         }
     }
     setCards(result);
