@@ -1,10 +1,13 @@
 import {Card} from './card'
 import { CardinalDirection } from './cardinal_directions';
 import { Suit } from './suit';
+import { Bidder } from './bidder';
+import { GameSchedulerType } from './game_scheduler_type';
 
 const NumberOfPlayers = 4
 
 class GameScheduler {
+    type : GameSchedulerType // TODO: to remove when playing bots are implemented
     current_direction : CardinalDirection;
     lead_direction: CardinalDirection;
 
@@ -15,12 +18,19 @@ class GameScheduler {
     cardsSouth : any[] = []
     cardsEast : any[] = []
     cardsWest : any[] = []
+    playerW : any
+    playerE : any
+    playerN : any
 
-    constructor() {
+    constructor(schedulerType : GameSchedulerType) {
+        this.type = schedulerType
         this.current_direction = CardinalDirection.None
         this.lead_direction = CardinalDirection.None
 
         this.played_suit = Suit.NoTrump
+        this.playerW = null
+        this.playerE = null
+        this.playerN = null
     }
 
     setLeadDirection(direction : CardinalDirection) {
@@ -38,6 +48,40 @@ class GameScheduler {
 
     setNextDirection() {
         this.current_direction = (this.current_direction + 1) % NumberOfPlayers
+
+        if (this.type === GameSchedulerType.Play) { // TODO: to remove if play() works fine for playing bots
+            return
+        }
+
+        if (this.current_direction === CardinalDirection.West) {
+            this.playerW.play()
+
+            return
+        }
+
+        if (this.current_direction === CardinalDirection.East) {
+            this.playerE.play()
+
+            return
+        }
+
+        if (this.current_direction === CardinalDirection.North) {
+            this.playerN.play()
+
+            return
+        }
+    }
+
+    setPlayerW(player : any) {
+        this.playerW = player
+    }
+
+    setPlayerE(player : any) {
+        this.playerE = player
+    }
+
+    setPlayerN(player : any) {
+        this.playerN = player
     }
 
     processPlayedCard(cardInfo: Card, card: any, direction: CardinalDirection) {
@@ -66,6 +110,10 @@ class GameScheduler {
     }
 
     processSpacePressed() {
+        if (this.type === GameSchedulerType.Bid) {
+            return
+        }
+
         if (this.current_direction === CardinalDirection.Waiting) {
             let first_suit = this.card_info_in_trick[0].suit
             let indexMax = 0
