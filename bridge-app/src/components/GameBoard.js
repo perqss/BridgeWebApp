@@ -5,6 +5,7 @@ import {CardView} from './CardView';
 import {Card} from '../common/deck/card';
 import {Color} from '../common/deck/color';
 import {GameScheduler} from '../common/deck/game_scheduler';
+import { Player } from '../common/deck/player';
 
 import '../style/game/GameTopContainer.css';
 import '../style/game/ContainerTop.css';
@@ -17,6 +18,7 @@ const dealer = new Dealer();
 const hands = dealer.deal();
 const cardBackId = 0x1F0A0;
 const cardBackColor = Color.black;
+const cardOwner = new Map()
 let firstCardPlayed = false;
 
 const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
@@ -37,6 +39,17 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
     let countEW = 0;
     const width = window.innerWidth * 0.7;
     const height = window.innerHeight;
+
+    gameScheduler.setCardOwner(cardOwner)
+    let playerW = new Player(cardsWest, "west")
+    let playerE = new Player(cardsEast, "east")
+    let playerN = new Player(cardsNorth, "north")
+    let playerS = new Player(cardsNorth, "south")
+    gameScheduler.setPlayerW(playerW)
+    gameScheduler.setPlayerE(playerE)
+    gameScheduler.setPlayerN(playerN)
+    gameScheduler.setPlayerS(playerS)
+
 
     function processSpacePressed() {
         gameScheduler.processSpacePressed()
@@ -72,18 +85,6 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
         }
 
         function create() {
-        this.input.keyboard.on('keydown-' + 'SPACE', function (event) {
-            const whoTookTrick = gameScheduler.processSpacePressed();
-
-            if (whoTookTrick === CardinalDirection.East || whoTookTrick === CardinalDirection.West) {
-                countEW += 1;
-                counterEWText.setText(`EW: ${countEW}`);
-            } else if (whoTookTrick === CardinalDirection.North || whoTookTrick === CardinalDirection.South) {
-                countNS += 1;
-                counterNSText.setText(`NS: ${countNS}`);
-            }
-        });
-
             
         const fontSize = (height + width) * 0.05;
         this.add.rectangle(width / 2, height / 2, width * 0.8, height * 0.6, 0x00ff00);
@@ -117,6 +118,35 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
         const southText = this.add.text(width * 0.465, height * 0.74, 'username', {
             font: `${southPlayer.width / 7}px Arial`
         });
+         
+        let gameStarted = false
+
+        const play = this.add.text(width * 0.9, height * 0.95, 'PLAY', {
+            font: `${southPlayer.width / 7}px Arial`
+        });
+
+        play.setInteractive()
+
+        play.on('pointerdown', () => {
+            if (!gameStarted) {
+                if (auctionWinner !== undefined) {
+                    gameScheduler.playBotCard()
+                    gameStarted = true;
+                }
+            } else {
+                const whoTookTrick = gameScheduler.processSpacePressed();
+
+                if (whoTookTrick === CardinalDirection.East || whoTookTrick === CardinalDirection.West) {
+                    countEW += 1;
+                    counterEWText.setText(`EW: ${countEW}`);
+                } else if (whoTookTrick === CardinalDirection.North || whoTookTrick === CardinalDirection.South) {
+                    countNS += 1;
+                    counterNSText.setText(`NS: ${countNS}`);
+                }
+    
+                gameScheduler.playBotCard();
+            }
+        })
 
         const westPlayer = this.add.rectangle(width * 0.15, height * 0.5, width * 0.035, height * 0.15, Phaser.Display.Color.GetColor(24, 24, 24));
         const west = this.add.rectangle(width * 0.15, height * 0.58, width * 0.035, height * 0.03, Phaser.Display.Color.GetColor(211, 10, 3));
@@ -173,6 +203,8 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
                         cardsNorthIndices, topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05, card.y)
                 };
             });
+
+            cardOwner.set(updatedCard.id, card)
         })
         
         cardsSouth.forEach((updatedCard, index) => {
@@ -194,6 +226,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
                         cardsSouthIndices, topLeft.x + topLeft.width / 2 + topMiddle.width * 0.05, card.y);
                 }
             });
+            cardOwner.set(updatedCard.id, card)
         })
 
         cardsWest.forEach((updatedCard, index) => {
@@ -215,6 +248,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
                         cardsWestIndices, card.x, height * 0.08 + middleRight.height / 10);
                 }
             });
+            cardOwner.set(updatedCard.id, card)
         })
 
         cardsEast.forEach((updatedCard, index) => {
@@ -236,6 +270,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
                         cardsEastIndices, card.x, height * 0.08 + middleRight.height / 10);
                 }
             });
+            cardOwner.set(updatedCard.id, card)
         })
 
         const updateCardPositions = (cardsArray, initialX, xOffset, initialY, yOffset) => {
@@ -296,7 +331,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
               targets: card,
               x: newX,
               y: newY,
-              duration: 200, // adjust the duration as needed
+              duration: 1000, // adjust the duration as needed
               ease: 'Power2',
               onComplete: () => {
                 card.setDepth(cardDepth++);
@@ -309,6 +344,8 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
                     revealCards(nextCardsComponents)
                     firstCardPlayed = true
                 }
+
+                gameScheduler.playBotCard()
               }
             });
         }

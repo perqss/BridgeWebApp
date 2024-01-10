@@ -116,9 +116,12 @@ const Game = () => {
     if (passCount.current === 3) {
         // player who first plays card after bidding is finished is the one to the left from the auction winner
         gameScheduler.setLeadDirection((auctionScheduler.lead_direction + 1) % 4)
+        gameScheduler.setNShouldPlayAsBot(getBiddingPair(gameScheduler.getCurrentDirection()) === BiddingPair.NS)
         setAuctionWinner(lastCard.current);
         setShowSnackbar(true);
         setShowTailSpin(true);
+
+        return
     }
     auctionScheduler.setNextDirection();
   }

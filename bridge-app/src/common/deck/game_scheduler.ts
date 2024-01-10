@@ -21,6 +21,9 @@ class GameScheduler {
     playerW : any
     playerE : any
     playerN : any
+    playerS : any
+    cardOwner: any
+    shouldNPlayAsBot : Boolean
 
     constructor(schedulerType : GameSchedulerType) {
         this.type = schedulerType
@@ -31,6 +34,8 @@ class GameScheduler {
         this.playerW = null
         this.playerE = null
         this.playerN = null
+        this.playerS = null
+        this.shouldNPlayAsBot = false
     }
 
     setLeadDirection(direction : CardinalDirection) {
@@ -48,7 +53,7 @@ class GameScheduler {
 
     setNextDirection() {
         this.current_direction = (this.current_direction + 1) % NumberOfPlayers
-
+    
         if (this.type === GameSchedulerType.Play) { // TODO: to remove if play() works fine for playing bots
             return
         }
@@ -84,9 +89,37 @@ class GameScheduler {
         this.playerN = player
     }
 
+    setPlayerS(player : any) {
+        this.playerS = player
+    }
+
+    setCardOwner(cardOwner: any) {
+        this.cardOwner = cardOwner
+    }
+
+    setNShouldPlayAsBot(shouldNPlayAsBot : Boolean) {
+        this.shouldNPlayAsBot = shouldNPlayAsBot
+    }
+
     processPlayedCard(cardInfo: Card, card: any, direction: CardinalDirection) {
         if (this.current_direction === direction) {
+            if (this.card_info_in_trick.length > 0) {
+                let playedSuitByFirstPlayer =  this.card_info_in_trick[0].suit
+
+                if (cardInfo.suit !== playedSuitByFirstPlayer) {
+                    let playerCards = this.getCurrentPlayer().cards
+
+                    for (let i = 0; i < playerCards.length; i++) {
+                        console.log("card ", playerCards[i].id)
+                        if (playerCards [i].suit === playedSuitByFirstPlayer) {
+                            return false
+                        }
+                    }
+                }
+            }
+
             this.cards_played_in_trick.push(card)
+
             this.card_info_in_trick.push(cardInfo)
 
             if (this.cards_played_in_trick.length === NumberOfPlayers) {
@@ -187,6 +220,65 @@ class GameScheduler {
         }
 
         return []
+    }
+
+    playBotCard()
+    {
+        console.log(this.current_direction)
+        if (this.current_direction === CardinalDirection.West) {
+            let cardPlayed = this.playerW.play(this.card_info_in_trick)
+            if (cardPlayed === undefined) {
+                console.log("game ended")
+                return
+            }
+
+            this.cardOwner.get(cardPlayed.id).listeners('pointerdown')[0]()
+
+            return
+        }
+
+        if (this.current_direction === CardinalDirection.North && this.shouldNPlayAsBot) {
+            let cardPlayed = this.playerN.play(this.card_info_in_trick)
+            console.log(this.card_info_in_trick)
+            if (cardPlayed === undefined) {
+                console.log("game ended")
+                return
+            }
+
+            this.cardOwner.get(cardPlayed.id).listeners('pointerdown')[0]()
+            
+            return
+        }
+
+        if (this.current_direction === CardinalDirection.East) {
+            let cardPlayed = this.playerE.play(this.card_info_in_trick)
+            if (cardPlayed === undefined) {
+                console.log("game ended")
+                return
+            }
+
+            this.cardOwner.get(cardPlayed.id).listeners('pointerdown')[0]()
+
+            return
+        }
+    }
+
+    getCurrentPlayer() {
+        if (this.current_direction === CardinalDirection.North) {
+            return this.playerN
+        }
+
+        if (this.current_direction === CardinalDirection.South) {
+            return this.playerS
+        }
+
+        if (this.current_direction === CardinalDirection.East) {
+            return this.playerE
+        }
+
+        if (this.current_direction === CardinalDirection.West) {
+            return this.playerW
+        }
     }
 }
 
