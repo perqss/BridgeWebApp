@@ -117,6 +117,14 @@ class GameScheduler {
                 }
             }
 
+            if (this.current_direction === CardinalDirection.South) {
+                this.playerS.playCardAsHuman(cardInfo)
+            }
+
+            if (this.current_direction === CardinalDirection.North && !this.shouldNPlayAsBot) {
+                this.playerN.playCardAsHuman(cardInfo)
+            }
+
             this.cards_played_in_trick.push(card)
 
             this.card_info_in_trick.push(cardInfo)
@@ -223,7 +231,6 @@ class GameScheduler {
 
     playBotCard()
     {
-        console.log(this.current_direction)
         if (this.current_direction === CardinalDirection.West) {
             let cardPlayed = this.playerW.play(this.card_info_in_trick)
             if (cardPlayed === undefined) {
