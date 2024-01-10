@@ -121,13 +121,16 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
          
         let gameStarted = false
 
-        const play = this.add.text(width * 0.9, height * 0.95, 'PLAY', {
+        let play;
+        if (auctionWinner) {
+            play = this.add.text(width * 0.9, height * 0.95, 'PLAY', {
             font: `${southPlayer.width / 7}px Arial`
         });
+        }
 
-        play.setInteractive()
+        play?.setInteractive()
 
-        play.on('pointerdown', () => {
+        play?.on('pointerdown', () => {
             if (!gameStarted) {
                 if (auctionWinner !== undefined) {
                     gameScheduler.playBotCard()
