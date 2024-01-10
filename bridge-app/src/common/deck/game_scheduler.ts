@@ -105,7 +105,7 @@ class GameScheduler {
         if (this.current_direction === direction) {
             if (this.card_info_in_trick.length > 0) {
                 let playedSuitByFirstPlayer =  this.card_info_in_trick[0].suit
-
+                console.log("lookin for suit ", playedSuitByFirstPlayer)
                 if (cardInfo.suit !== playedSuitByFirstPlayer) {
                     let playerCards = this.getCurrentPlayer().cards
 
