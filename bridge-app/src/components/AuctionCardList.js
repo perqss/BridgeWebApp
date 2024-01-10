@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Paper, Button, List, ListItem, ListItemButton, ListItemText, Divider, Typography } from '@mui/material';
 import { Suit } from '../common/deck/suit';
 import { CardinalDirection } from '../common/deck/cardinal_directions';
@@ -9,13 +9,15 @@ import { bottomButtonsText, getSuitBidPriority } from '../pages/Game';
 import { backgroundColor } from '../common/utils';
 
 
-const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCardAtScheduledDirection, hideCardsBelowRank, clickedSuitRank, auctionWinner }) => {
+const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCardAtScheduledDirection, 
+    hideCardsBelowRank, clickedSuitRank, auctionWinner }) => {
 
+  const [card, setCard] = useState();
   const renderCardText = (card, index) => {
     const emptyCard = new Card(undefined, undefined, undefined, backgroundColor);
-    const noTrumpCardEmpty = new Card(Suit.NoTrump, index + 1, 'NT', backgroundColor);
-    const noTrumpCardWhite = new Card(Suit.NoTrump, index + 1, 'NT', Color.white);
-
+    const noTrumpCardEmpty = new Card(Suit.NoTrump, card.rank, 'NT', backgroundColor);
+    const noTrumpCardWhite = new Card(Suit.NoTrump, card.rank, 'NT', Color.white);
+    
     if (bottomButtonsText.includes(card.suit)) {
         return card.suit;
     } else if (emptyCard.equals(card)) { // Value Object pattern
@@ -30,14 +32,21 @@ const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCar
   const handleOnClick = (card) => {
     if (!players && auctionWinner === undefined) {
         modifyBiddingState();
-        setCardAtScheduledDirection(card);
-        hideCardsBelowRank(card.rank, card.suit);
+        hideCardsBelowRank(card);
+        setCard(card);
     }
   }
 
-  const isDisabled = (index, suit) => (index + 1 < clickedSuitRank[1]
-                                || (index + 1 === clickedSuitRank[1] && getSuitBidPriority(suit) <= getSuitBidPriority(clickedSuitRank[0])))
-                                || players || auctionWinner !== undefined;
+  useEffect(() => {
+    if (card) {
+        setCardAtScheduledDirection(card);
+    }
+  }, [card])
+
+  const isDisabled = (index, suit) => {
+    return (index + 1 < clickedSuitRank[1]|| (index + 1 === clickedSuitRank[1] && 
+        getSuitBidPriority(suit) <= getSuitBidPriority(clickedSuitRank[0])))|| players || auctionWinner !== undefined;
+  }
     
   return (
     <List>

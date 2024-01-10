@@ -72,6 +72,7 @@ export const getSuitBidPriority = (suit) => {
   }
 
 const Game = () => {
+  const [card, setCard] = useState();
   const [NTs, setNTs] = useState([]);
   const [hearts, setHearts] = useState([]);
   const [diamonds, setDiamonds] = useState([]);
@@ -95,8 +96,61 @@ const Game = () => {
   const playerCards = [cardsS, cardsW, cardsN, cardsE];
   const setPlayerCards = [setCardsS, setCardsW, setCardsN, setCardsE];
   const directions = ['S', 'W', 'N', 'E'];
-  
   const bottomButtonsColors = ['green', 'red', lightBlue];
+  const bottomButtonIds = ['btnPass', 'btnX', 'btnXx'];
+
+  const getAllValidCards = () => {
+    const cardsToChooseFrom = [];
+    for (let i = 0; i < cards.length; ++i) {
+        for (let j = 0; j < cards[i].length; j++) {
+            if (cards[i][j].color !== backgroundColor) {
+                cardsToChooseFrom.push(cards[i][j]);
+            }
+        }
+    }
+    return cardsToChooseFrom;
+  }
+
+  const chooseCardForBot = (card) => {
+    // add normal non-disabled cards
+    const cardsToChooseFrom = getAllValidCards();
+    // add pass, x or xx if they're not disabled
+    for (let i = 0; i < bottomButtonIds.length; ++i) {
+        let buttonElement = document.getElementById(bottomButtonIds[i]);
+        const isDisabled = buttonElement?.disabled;
+        if (!isDisabled) {
+            const newCard = new Card(bottomButtonsText[i], undefined, undefined, bottomButtonsColors[i]);
+            cardsToChooseFrom.push(newCard);
+        }
+    }
+
+    const randomCard = cardsToChooseFrom[Math.floor(Math.random() * cardsToChooseFrom.length)];
+    if (randomCard) {
+        if (randomCard.id) { // for normal cards
+            modifyBiddingStateOnNormalCardClicked();
+            hideCardsBelowRank(randomCard);
+        } else { // for pass, x, xx
+            modifyBiddingStateOnBottomButtonsClick(card.suit);
+        }
+        setCard(randomCard); // calls setCardAtScheduledDirection(card)
+    }
+  }
+
+  useEffect(() => {
+    if (card) {
+        setCardAtScheduledDirection(card);
+    }
+  }, [card])
+
+  const setAucitonEnd = () => {
+    // player who first plays card after bidding is finished is the one to the left from the auction winner
+    gameScheduler.setLeadDirection((auctionScheduler.lead_direction + 1) % 4);
+    gameScheduler.setNShouldPlayAsBot(getBiddingPair(gameScheduler.getCurrentDirection()) === BiddingPair.NS);
+    setAuctionWinner(lastCard.current);
+    gameScheduler.played_suit = lastCard.current.suit;
+    setShowSnackbar(true);
+    setShowTailSpin(true);
+  }
 
   // TODO: Implement bot strategies during auction
   const setCardAtScheduledDirection = (card) => {
@@ -112,19 +166,17 @@ const Game = () => {
     }
     const setFunc = setPlayerCards[auctionScheduler.current_direction];
     setFunc((prevCards) => [...prevCards, card]);
+    console.log(auctionScheduler.getCurrentDirection())
     // TODO: Change conditions for the auction winner (they're probably not right)
-    if (passCount.current === 3) {
-        // player who first plays card after bidding is finished is the one to the left from the auction winner
-        gameScheduler.setLeadDirection((auctionScheduler.lead_direction + 1) % 4)
-        gameScheduler.setNShouldPlayAsBot(getBiddingPair(gameScheduler.getCurrentDirection()) === BiddingPair.NS)
-        setAuctionWinner(lastCard.current);
-        gameScheduler.played_suit = lastCard.current.suit
-        setShowSnackbar(true);
-        setShowTailSpin(true);
-
-        return
+    if (passCount.current === 3 || getAllValidCards().length === 0) {
+        setAucitonEnd();
+        return;
     }
+
     auctionScheduler.setNextDirection();
+    if (auctionScheduler.getCurrentDirection() !== CardinalDirection.South) {
+        chooseCardForBot(card);
+    }
   }
 
   const handleBottomButtonsClick = (cardText, index) => {
@@ -153,16 +205,16 @@ const Game = () => {
     return arr.map(element => Array.isArray(element) ? deepCopy(element) : {...element});
   }
 
-  const hideCardsBelowRank = (rank, suit) => {
-    setClickedSuitRank([suit, rank]);
-    const bound = rank - 1
+  const hideCardsBelowRank = (card) => {
+    setClickedSuitRank([card.suit, card.rank]);
+    const bound = card.rank - 1
     const cardsClone = deepCopy(cards);
     for (let i = 0; i < cards.length; ++i) {
         for (let j = 0; j < bound; ++j) {
             cardsClone[i][j].color = backgroundColor;
         }
 
-        if (getSuitBidPriority(suit) >= i) {
+        if (getSuitBidPriority(card.suit) >= i) {
             cardsClone[i][bound].color = backgroundColor;
         }
 
@@ -259,6 +311,7 @@ const Game = () => {
                                 hideCardsBelowRank={hideCardsBelowRank}
                                 clickedSuitRank={clickedSuitRank}
                                 auctionWinner={auctionWinner}
+                               // handleOnClick={handleOnClickNormalCard}
                             />
                         }
                     />
@@ -267,6 +320,7 @@ const Game = () => {
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center'}}>
                 {bottomButtonsText.map((buttonText, index) => 
                     <Button
+                        id={bottomButtonIds[index]}
                         key={index}
                         sx={{backgroundColor: bottomButtonsColors[index], color: 'white', margin: 0.5}}
                         onClick={() => handleBottomButtonsClick(buttonText, index)}

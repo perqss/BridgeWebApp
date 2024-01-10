@@ -59,19 +59,19 @@ class GameScheduler {
         }
 
         if (this.current_direction === CardinalDirection.West) {
-            this.playerW.play()
+            //this.playerW.play()
 
             return
         }
 
         if (this.current_direction === CardinalDirection.East) {
-            this.playerE.play()
+            //this.playerE.play()
 
             return
         }
 
         if (this.current_direction === CardinalDirection.North) {
-            this.playerN.play()
+            //this.playerN.play()
 
             return
         }
