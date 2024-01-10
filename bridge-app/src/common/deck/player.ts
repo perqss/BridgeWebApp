@@ -8,7 +8,6 @@ class Player {
 
     play(cardsOnTable: any[]) {
         console.log(cardsOnTable) // XD?
-        console.log("playing, ", this.name)
         if (cardsOnTable.length === 0) {
             return this.cards.pop()
         }
@@ -20,10 +19,8 @@ class Player {
         
             if (card.suit === played_suit) {
                 this.cards.splice(i, 1)
-                console.log(this.cards.length)
                 return card
             }
-            console.log("proceed")
         }
 
         return this.cards.pop()
