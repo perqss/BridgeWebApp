@@ -118,6 +118,7 @@ const Game = () => {
         gameScheduler.setLeadDirection((auctionScheduler.lead_direction + 1) % 4)
         gameScheduler.setNShouldPlayAsBot(getBiddingPair(gameScheduler.getCurrentDirection()) === BiddingPair.NS)
         setAuctionWinner(lastCard.current);
+        gameScheduler.played_suit = lastCard.current.suit
         setShowSnackbar(true);
         setShowTailSpin(true);
 

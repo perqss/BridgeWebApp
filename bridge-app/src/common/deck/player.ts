@@ -1,14 +1,14 @@
+import {Card} from './card'
+
 class Player {
-    cards : any[]
+    cards : Array<Card>
     name : any
-    constructor(cards: any[], name: any) {
+    constructor(cards: Array<Card>, name: any) {
         this.cards = cards
         this.name = name
     }
 
     play(cardsOnTable: any[]) {
-        console.log(cardsOnTable) // XD?
-        console.log("playing, ", this.name)
         if (cardsOnTable.length === 0) {
             return this.cards.pop()
         }
@@ -20,13 +20,20 @@ class Player {
         
             if (card.suit === played_suit) {
                 this.cards.splice(i, 1)
-                console.log(this.cards.length)
                 return card
             }
-            console.log("proceed")
         }
 
         return this.cards.pop()
+    }
+
+    playCardAsHuman(card: Card) {
+        for (let i = 0; i < this.cards.length; i++) {
+            if (this.cards[i].id === card.id) {
+                this.cards.splice(i, 1)
+                return
+            }
+        }
     }
 }
 

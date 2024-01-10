@@ -44,7 +44,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
     let playerW = new Player(cardsWest, "west")
     let playerE = new Player(cardsEast, "east")
     let playerN = new Player(cardsNorth, "north")
-    let playerS = new Player(cardsNorth, "south")
+    let playerS = new Player(cardsSouth, "south")
     gameScheduler.setPlayerW(playerW)
     gameScheduler.setPlayerE(playerE)
     gameScheduler.setPlayerN(playerN)

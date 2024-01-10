@@ -110,12 +110,19 @@ class GameScheduler {
                     let playerCards = this.getCurrentPlayer().cards
 
                     for (let i = 0; i < playerCards.length; i++) {
-                        console.log("card ", playerCards[i].id)
                         if (playerCards [i].suit === playedSuitByFirstPlayer) {
                             return false
                         }
                     }
                 }
+            }
+
+            if (this.current_direction === CardinalDirection.South) {
+                this.playerS.playCardAsHuman(cardInfo)
+            }
+
+            if (this.current_direction === CardinalDirection.North && !this.shouldNPlayAsBot) {
+                this.playerN.playCardAsHuman(cardInfo)
             }
 
             this.cards_played_in_trick.push(card)
@@ -150,7 +157,8 @@ class GameScheduler {
         if (this.current_direction === CardinalDirection.Waiting) {
             let first_suit = this.card_info_in_trick[0].suit
             let indexMax = 0
-
+            console.log("trick: ", this.card_info_in_trick)
+            console.log("triumph: ", this.played_suit)
             if (this.played_suit === Suit.NoTrump) {
                 for (let i = 1; i < NumberOfPlayers; i++) {
                     if (this.card_info_in_trick[i].suit === first_suit) {
@@ -173,14 +181,17 @@ class GameScheduler {
                     indexMax = 0
                     for (let i = 1; i < NumberOfPlayers; i++) {
                         if (this.card_info_in_trick[i].suit === first_suit) {
-                            if (this.card_info_in_trick[i].rank > this.card_info_in_trick[0].rank) {
+                            if (this.card_info_in_trick[i].rank > this.card_info_in_trick[indexMax].rank) {
                                 indexMax = i
                             }
                         }
                     }
+                } else {
+                    indexMax = suitedMax
                 }
             }
 
+            console.log("who took ", indexMax)
             this.cards_played_in_trick.forEach((card) => {
                 card.destroy();
             })
@@ -224,7 +235,6 @@ class GameScheduler {
 
     playBotCard()
     {
-        console.log(this.current_direction)
         if (this.current_direction === CardinalDirection.West) {
             let cardPlayed = this.playerW.play(this.card_info_in_trick)
             if (cardPlayed === undefined) {
@@ -239,7 +249,7 @@ class GameScheduler {
 
         if (this.current_direction === CardinalDirection.North && this.shouldNPlayAsBot) {
             let cardPlayed = this.playerN.play(this.card_info_in_trick)
-            console.log(this.card_info_in_trick)
+
             if (cardPlayed === undefined) {
                 console.log("game ended")
                 return
