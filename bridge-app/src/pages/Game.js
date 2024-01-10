@@ -198,6 +198,15 @@ const Game = () => {
     }
   }
 
+  const parseBidWinner = (id) => {
+    if (id === 'NT') {
+        return 'NT'
+    } else {
+        return String.fromCodePoint(id)
+    }
+  }
+
+
   const bidderW = new Bidder(handleBottomButtonsClick)
   const bidderE = new Bidder(handleBottomButtonsClick)
   const bidderN = new Bidder(handleBottomButtonsClick)
@@ -297,7 +306,7 @@ const Game = () => {
                     {'Bid: '}
                 </div>
                 <div style={{color: auctionWinner.color, marginLeft: 5}}>
-                    {`${auctionWinner.rank} ${String.fromCodePoint(auctionWinner.id)}`}
+                    {`${auctionWinner.rank} ` + parseBidWinner(auctionWinner.id)}
                 </div>
                 <div style={{marginLeft: 5}}>
                     {parseCurrentDirection()}
