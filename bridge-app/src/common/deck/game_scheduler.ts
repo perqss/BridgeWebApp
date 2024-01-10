@@ -157,7 +157,8 @@ class GameScheduler {
         if (this.current_direction === CardinalDirection.Waiting) {
             let first_suit = this.card_info_in_trick[0].suit
             let indexMax = 0
-
+            console.log("trick: ", this.card_info_in_trick)
+            console.log("triumph: ", this.played_suit)
             if (this.played_suit === Suit.NoTrump) {
                 for (let i = 1; i < NumberOfPlayers; i++) {
                     if (this.card_info_in_trick[i].suit === first_suit) {
@@ -180,14 +181,17 @@ class GameScheduler {
                     indexMax = 0
                     for (let i = 1; i < NumberOfPlayers; i++) {
                         if (this.card_info_in_trick[i].suit === first_suit) {
-                            if (this.card_info_in_trick[i].rank > this.card_info_in_trick[0].rank) {
+                            if (this.card_info_in_trick[i].rank > this.card_info_in_trick[indexMax].rank) {
                                 indexMax = i
                             }
                         }
                     }
+                } else {
+                    indexMax = suitedMax
                 }
             }
 
+            console.log("who took ", indexMax)
             this.cards_played_in_trick.forEach((card) => {
                 card.destroy();
             })
