@@ -168,7 +168,7 @@ const Game = () => {
     setFunc((prevCards) => [...prevCards, card]);
     console.log(auctionScheduler.getCurrentDirection())
     // TODO: Change conditions for the auction winner (they're probably not right)
-    if (passCount.current === 3 || getAllValidCards().length === 0) {
+    if (passCount.current === 3) {
         setAucitonEnd();
         return;
     }
