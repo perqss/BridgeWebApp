@@ -4,7 +4,8 @@ import MuiPagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography'
 import { backgroundColor } from '../common/utils';
 import { Header, FormButton } from '../components/MaterialComponentsCss';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+
 
 const columns = [
     { field: 'id', headername: 'id', hide: true},
@@ -28,6 +29,8 @@ const Tournament = () => {
 
   const [data, setData] = useState();
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location?.state?.counter);
 
   useEffect(() => {
     const sortedRows = rows.slice().sort((a, b) => b.points - a.points);
