@@ -107,7 +107,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
         this.add.text(width * 0.447, height * 0.24, 'N', {
             font: `${northPlayer.width / 7}px Arial`
         });
-        this.add.text(width * 0.465, height * 0.24, 'username', {
+        this.add.text(width * 0.465, height * 0.24, 'nate', {
             font: `${north.width / 1.5}px Arial`
         });
 
@@ -116,7 +116,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
         this.add.text(width * 0.447, height * 0.74, 'S', {
             font: `${south.width / 1.5}px Arial`
         });
-        const southText = this.add.text(width * 0.465, height * 0.74, 'username', {
+        const southText = this.add.text(width * 0.465, height * 0.74, 'sam', {
             font: `${southPlayer.width / 7}px Arial`
         });
          
@@ -124,7 +124,8 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
 
         let play;
         if (auctionWinner) {
-            play = this.add.text(width * 0.9, height * 0.95, 'PLAY', {
+            const playBackground = this.add.rectangle(width * 0.95, height * 0.95, width * 0.05, height * 0.05, Phaser.Display.Color.GetColor(211, 10, 3));
+            play = this.add.text(width * 0.93, height * 0.94, 'PLAY', {
             font: `${southPlayer.width / 7}px Arial`
         });
         }
@@ -157,7 +158,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
 
         const westPlayer = this.add.rectangle(width * 0.15, height * 0.5, width * 0.035, height * 0.15, Phaser.Display.Color.GetColor(24, 24, 24));
         const west = this.add.rectangle(width * 0.15, height * 0.58, width * 0.035, height * 0.03, Phaser.Display.Color.GetColor(211, 10, 3));
-        const westText = this.add.text(width * 0.147, height * 0.5, 'username', {
+        const westText = this.add.text(width * 0.147, height * 0.5, 'werner', {
             font: `${westPlayer.height / 8}px Arial`
         });
         westText.setOrigin(0.5);
@@ -170,7 +171,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
 
         const eastPlayer = this.add.rectangle(width * 0.85, height * 0.5, width * 0.035, height * 0.15, Phaser.Display.Color.GetColor(24, 24, 24));
         const east = this.add.rectangle(width * 0.85, height * 0.58, width * 0.035, height * 0.03, Phaser.Display.Color.GetColor(211, 10, 3));
-        const eastText = this.add.text(width * 0.85, height * 0.5, 'username', {
+        const eastText = this.add.text(width * 0.85, height * 0.5, 'edward', {
             font: `${eastPlayer.height / 8}px Arial`,
         });
         eastText.setOrigin(0.5);
