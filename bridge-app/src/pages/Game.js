@@ -240,13 +240,13 @@ const Game = () => {
   };
 
   const parseCurrentDirection = () => {
-    if (auctionScheduler.current_direction === CardinalDirection.South) {
+    if (auctionScheduler.lead_direction === CardinalDirection.South) {
         return 'S';
-    } else if (auctionScheduler.current_direction === CardinalDirection.North) {
+    } else if (auctionScheduler.lead_direction === CardinalDirection.North) {
         return 'N';
-    } else if (auctionScheduler.current_direction === CardinalDirection.East) {
+    } else if (auctionScheduler.lead_direction === CardinalDirection.East) {
         return 'E';
-    } else if (auctionScheduler.current_direction === CardinalDirection.West) {
+    } else if (auctionScheduler.lead_direction === CardinalDirection.West) {
         return 'W';
     }
   }
