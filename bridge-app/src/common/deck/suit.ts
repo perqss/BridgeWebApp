@@ -3,7 +3,8 @@ enum Suit {
     Hearts,
     Clubs,
     Diamonds,
-    NoTrump
+    NoTrump,
+    Empty
 }
 
 export {Suit}

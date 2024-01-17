@@ -3,7 +3,7 @@ import { Paper, Button, List, ListItem, ListItemButton, ListItemText, Divider, T
 import { Suit } from '../common/deck/suit';
 import { CardinalDirection } from '../common/deck/cardinal_directions';
 import { GameScheduler } from '../common/deck/game_scheduler';
-import { Card } from '../common/deck/card';
+import { Card, EmptyCard } from '../common/deck/card';
 import { Color } from '../common/deck/color';
 import { bottomButtonsText, getSuitBidPriority } from '../pages/Game';
 import { backgroundColor } from '../common/utils';
@@ -14,7 +14,7 @@ const AuctionCardList = ({ cards, players, direction, modifyBiddingState, setCar
 
   const [card, setCard] = useState();
   const renderCardText = (card, index) => {
-    const emptyCard = new Card(undefined, undefined, undefined, backgroundColor);
+    const emptyCard = new EmptyCard();
     const noTrumpCardEmpty = new Card(Suit.NoTrump, card.rank, 'NT', backgroundColor);
     const noTrumpCardWhite = new Card(Suit.NoTrump, card.rank, 'NT', Color.white);
     

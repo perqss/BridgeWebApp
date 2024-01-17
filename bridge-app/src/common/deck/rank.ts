@@ -11,7 +11,8 @@ enum Rank {
     Jack,
     Queen,
     King,
-    Ace
+    Ace,
+    Empty
 }
 
 export {Rank}

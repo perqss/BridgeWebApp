@@ -1,5 +1,6 @@
 import {Suit} from './suit'
 import {Rank} from './rank'
+import { backgroundColor } from '../utils';
 
 class Card {
     suit: Suit;
@@ -19,4 +20,14 @@ class Card {
     }
 }
 
-export {Card}
+class EmptyCard extends Card {
+    constructor() {
+        super(Suit.Empty, Rank.Empty, -1, backgroundColor);
+    }
+
+    equals(other: Card) {
+        return this.suit === other.suit && this.rank === other.rank && this.id === other.id && this.color === other.color;
+    }
+}
+
+export {Card, EmptyCard}
