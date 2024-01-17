@@ -26,6 +26,7 @@ class EmptyCard extends Card {
     }
 
     equals(other: Card) {
+        console.log(this, other);
         return this.suit === other.suit && this.rank === other.rank && this.id === other.id && this.color === other.color;
     }
 }
