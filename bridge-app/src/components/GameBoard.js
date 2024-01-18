@@ -152,7 +152,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
                     counterNSText.setText(`NS: ${countNS}`);
                 }
                 
-                if (countEW + countNS === 2) {
+                if (countEW + countNS === 13) {
                     navigate('/tournaments/' + tournamentId, {state: {counter: countEW}});
                 }
                 gameScheduler.playBotCard();
