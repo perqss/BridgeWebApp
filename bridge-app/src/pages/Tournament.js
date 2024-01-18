@@ -25,47 +25,52 @@ const Tournament = () => {
     const username = localStorage.getItem('user')
     const userId = localStorage.getItem('id')
 
-    const tournamentId = useParams().tournamentName;
-    if (location?.state?.counter) {
-        const updatedData = { deals: location.state.counter };
-        axios.get(`http://localhost:8000/api/userpoints/${userId}/${tournamentId}/`)
-            .then(response => {
-                // UserPoints exists, update it
-                return axios.put(`http://localhost:8000/api/userpoints/${userId}/${tournamentId}/`,
-                    {
-                        deals: Number(response.data.deals+1),
-                        points: Number(response.data.points)+Number(location.state.counter), }
-                );
-            })
-            .catch(error => {
-                if (error.response.status === 404) {
-                    // UserPoints does not exist, create it
-                    return axios.post(`http://localhost:8000/api/userpoints/`, {
-                        user: username,
-                        tournament: tournamentId,
-                        deals: 1,
-                        points: location.state.counter,
-                    });
-                } else {
-                    // Handle other errors
-                    return Promise.reject(error);
-                }
-            })
-            .then(response => {
-                console.log('UserPoints updated or created:', response.data);
-            })
-            .catch(error => {
-                console.error('Error in updating or creating UserPoints:', error);
-            });
+    useEffect(() => {
+        Service.getTournament(tournamentId).then(response => {
+            setTournamentName(response.data.name);
+        }).catch(e => {
+            console.error('Error fetching tournament:', e);
+        });
 
     }
 
+    useEffect(() => {
 
-    Service.getTournament(tournamentId).then(response => {
-        setTournamentName(response.data.name);
-    }).catch(e => {
-            console.error('Error fetching tournament:', e);
-    });
+        const tournamentId = useParams().tournamentName;
+        if (location?.state?.counter) {
+            const updatedData = { deals: location.state.counter };
+            axios.get(`http://localhost:8000/api/userpoints/${userId}/${tournamentId}/`)
+                .then(response => {
+                    // UserPoints exists, update it
+                    return axios.put(`http://localhost:8000/api/userpoints/${userId}/${tournamentId}/`,
+                        {
+                            deals: Number(response.data.deals+1),
+                            points: Number(response.data.points)+Number(location.state.counter), }
+                    );
+                })
+                .catch(error => {
+                    if (error.response.status === 404) {
+                        // UserPoints does not exist, create it
+                        return axios.post(`http://localhost:8000/api/userpoints/`, {
+                            user: username,
+                            tournament: tournamentId,
+                            deals: 1,
+                            points: location.state.counter,
+                        });
+                    } else {
+                        // Handle other errors
+                        return Promise.reject(error);
+                    }
+                })
+                .then(response => {
+                    console.log('UserPoints updated or created:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error in updating or creating UserPoints:', error);
+                });
+
+        }
+    }
 
     useEffect(() => {
         const fetchUserPoints = async () => {
