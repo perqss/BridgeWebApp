@@ -35,7 +35,7 @@ const Tournament = () => {
 
     useEffect(() => {
         const userId = localStorage.getItem('id')
-        if (location?.state?.counter) {
+        if (location?.state?.counter !== undefined && location?.state?.counter !== null) {
             const updatedData = { deals: location.state.counter };
             axios.get(`http://localhost:8000/api/userpoints/${userId}/${tournamentId}/`)
                 .then(response => {
@@ -56,7 +56,7 @@ const Tournament = () => {
                 })
             navigate(location.pathname, {});
         }
-    }, [location?.state?.counter]);
+    }, []);
 
     useEffect(() => {
         const fetchUserPoints = async () => {
