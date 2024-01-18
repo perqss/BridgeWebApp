@@ -1,25 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { List, ListItemButton, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Service from '../services/Service';
+
 
 const ChooseTournament = () => {
-  const tournaments = ['Tournament 1', 'Tournament 2', 'Tournament 3', 'Tournament 4', 'Tournament 5', 'Tournament 6', 'Tournament 7', 'Tournament 8', 'Tournament 9', 'Tournament 10'];
+  const [tournaments, setTournaments] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTournaments = async () => {
+      try {
+        const response = await Service.getTournaments();
+        setTournaments(response.data);
+      } catch (e) {
+        console.error('Error fetching tournaments:', e);
+      }
+    };
+
+    fetchTournaments();
+  }, []);
+
   return (
-    <List sx={{marginTop: '60px'}}>
-        {tournaments.map((tournament, index) => 
+      <List sx={{ marginTop: '60px' }}>
+        {tournaments.map(tournament =>
             <ListItemButton
-                key={index}
-                onClick={() => navigate(`/tournaments/${tournament}`)}
+                key={tournament.id}
+                onClick={() => {navigate(`/tournaments/${tournament.id}`,
+                    { state: { tournamentName: tournament.name,
+                            tournamentId: tournament.id } });
+                    }
+                }
             >
-                <ListItemText
-                    primary={`${tournament}`}
-                    primaryTypographyProps={{color: 'white', fontSize: '20px'}}
-                />
+              <ListItemText
+                  primary={tournament.name}
+                  primaryTypographyProps={{ color: 'white', fontSize: '20px' }}
+              />
             </ListItemButton>
         )}
-    </List>
+      </List>
   );
 }
 
 export default ChooseTournament;
+
+

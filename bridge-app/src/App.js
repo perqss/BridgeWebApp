@@ -62,7 +62,7 @@ function App() {
       localStorage.setItem('user', user.username);
     })
     .catch(e => {
-      console.log(e);
+      console.log("signup", e);
       setError(e.toString()); 
     })
   }

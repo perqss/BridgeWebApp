@@ -5,39 +5,43 @@ import Typography from '@mui/material/Typography'
 import { backgroundColor } from '../common/utils';
 import { Header, FormButton } from '../components/MaterialComponentsCss';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import Service from "../services/Service";
 
 
 const columns = [
     { field: 'id', headername: 'id', hide: true},
-    { field: 'firstName', headerName: 'First name', width: 130 },
-    { field: 'lastName', headerName: 'Last name', width: 130 }, 
+    { field: 'Username', headerName: 'Username', width: 130 },
     { field: 'deals', headerName: 'Deals', width: 130},
     { field: 'points', headerName: 'Points', width: 130},
 ];
 
-// change to an API call
-const rows = [
-    {id: 1, firstName: 'admin', lastName: 'admin', deals: 7, points: 100},
-    {id: 2, firstName: 'admin', lastName: 'admin', deals: 3, points: 40},
-    {id: 3, firstName: 'admin', lastName: 'admin', deals: 5, points: 50},
-    {id: 4, firstName: 'admin', lastName: 'admin', deals: 10, points: 70},
-    {id: 5, firstName: 'admin', lastName: 'admin', deals: 9, points: 97},
-    
-];
-
 const Tournament = () => {
 
-  const [data, setData] = useState();
-  const navigate = useNavigate();
-  const location = useLocation();
-  console.log(location?.state?.counter);
+    const [data, setData] = useState([]);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const tournamentId = location.state?.tournamentId;
+
+    useEffect(() => {
+        const fetchUserPoints = async () => {
+            try {
+                const response = await Service.getUserPoints(tournamentId);
+                setData(response.data);
+            } catch (e) {
+                console.error('Error fetching user points:', e);
+            }
+        };
+
+        fetchUserPoints();
+    }, []);
 
   useEffect(() => {
-    const sortedRows = rows.slice().sort((a, b) => b.points - a.points);
+    const sortedRows = data.slice().sort((a, b) => b.points - a.points);
     setData(sortedRows);
   }, [])
 
-  const tournamentName = useParams().tournamentName;
+  const tournamentName = location.state?.tournamentName;
   return (
     <div style={{ height: '100vh', width: '100vw', marginTop: '60px', display: 'flex', flexDirection: 'column'}}>
         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>

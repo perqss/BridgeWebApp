@@ -21,7 +21,7 @@ import { mainColor } from '../common/utils';
 import { GiCardAceHearts } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { handleSnackbarClose } from '../common/functions';
-
+import AvatarComponent from './AvatarComponent';
 
 const BridgeAppBar = (props) => {
   const appBarColor = '#171616';
@@ -117,7 +117,7 @@ const BridgeAppBar = (props) => {
                     onClick={handleAvatarClick}
                     ref={anchorRef}
                   >
-                    <Avatar
+                    <AvatarComponent
                       src={localStorage.getItem('avatarURL')}
                     />
                   <Popper
