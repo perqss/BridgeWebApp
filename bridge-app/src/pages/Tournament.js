@@ -23,6 +23,7 @@ const Tournament = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const tournamentId = useParams().tournamentName;
+    const [count, setCount] = useState(0);
 
     useEffect(() => {
         Service.getTournament(tournamentId).then(response => {
@@ -56,7 +57,7 @@ const Tournament = () => {
                 })
             navigate(location.pathname, {});
         }
-    }, []);
+    }, [location?.state?.counter]);
 
     useEffect(() => {
         const fetchUserPoints = async () => {
@@ -69,12 +70,12 @@ const Tournament = () => {
         };
 
         fetchUserPoints();
-    }, []);
+    }, [count]);
 
   useEffect(() => {
     const sortedRows = data.slice().sort((a, b) => b.points - a.points);
     setData(sortedRows);
-  }, [])
+  }, [count])
 
   return (
     <div style={{ height: '100vh', width: '100vw', marginTop: '60px', display: 'flex', flexDirection: 'column'}}>
