@@ -27,10 +27,17 @@ const Tournament = () => {
     const tournamentId = useParams().tournamentName;
     if (location?.state?.counter) {
         const updatedData = { deals: location.state.counter };
+        let UserId
         axios.get(`http://localhost:8000/api/userpoints/${username}/${tournamentId}/`)
             .then(response => {
                 // UserPoints exists, update it
-                return axios.put(`http://localhost:8000/api/userpoints/${username}/${tournamentId}/`, updatedData);
+                return axios.put(`http://localhost:8000/api/userpoints/${username}/${tournamentId}/`,
+                    {
+                        user: username,
+                        tournament: tournamentId,
+                        deals: Number(response.data.deals+1),
+                        points: Number(response.data.points)+Number(location.state.counter), }
+                );
             })
             .catch(error => {
                 if (error.response.status === 404) {
@@ -38,7 +45,8 @@ const Tournament = () => {
                     return axios.post(`http://localhost:8000/api/userpoints/`, {
                         user: username,
                         tournament: tournamentId,
-                        ...updatedData
+                        deals: 1,
+                        points: location.state.counter,
                     });
                 } else {
                     // Handle other errors
