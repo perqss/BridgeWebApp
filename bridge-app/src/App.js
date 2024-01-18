@@ -33,7 +33,7 @@ function App() {
       setUser(user);
       localStorage.setItem('token', response.data.token); 
       localStorage.setItem('user', user.username);
-      localStorage.setItem('id', user.id);
+      localStorage.setItem('id', response.data.id);
       setError('');
     }).catch(e => {
       console.log('login', e);
@@ -62,7 +62,7 @@ function App() {
       setUser(user);
       localStorage.setItem('token', response.data.token); 
       localStorage.setItem('user', user.username);
-      localStorage.setItem('id', user.id);
+      localStorage.setItem('id', response.data.id);
     })
     .catch(e => {
       console.log("signup", e);
