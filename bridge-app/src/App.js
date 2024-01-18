@@ -30,9 +30,10 @@ function App() {
   async function login(user = null) {
     Service.login(user).then(response => {
       setToken(response.data.token); 
-      setUser(user.username); 
+      setUser(user);
       localStorage.setItem('token', response.data.token); 
-      localStorage.setItem('user', user.username); 
+      localStorage.setItem('user', user.username);
+      localStorage.setItem('id', user.id);
       setError('');
     }).catch(e => {
       console.log('login', e);
@@ -52,14 +53,16 @@ function App() {
     setUser(''); 
     localStorage.setItem('token', ''); 
     localStorage.setItem('user', '');
+    localStorage.setItem('id', '');
     setCount(count - 1);
   }
   async function signup(user = null) {
     Service.signup(user).then(response => {
       setToken(response.data.token); 
-      setUser(user.username); 
+      setUser(user);
       localStorage.setItem('token', response.data.token); 
       localStorage.setItem('user', user.username);
+      localStorage.setItem('id', user.id);
     })
     .catch(e => {
       console.log("signup", e);

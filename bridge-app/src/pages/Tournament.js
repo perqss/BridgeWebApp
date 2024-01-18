@@ -6,6 +6,7 @@ import { backgroundColor } from '../common/utils';
 import { Header, FormButton } from '../components/MaterialComponentsCss';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Service from "../services/Service";
+import axios from "axios";
 
 
 const columns = [
@@ -21,8 +22,38 @@ const Tournament = () => {
     const [tournamentName, setTournamentName] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
+    const username = localStorage.getItem('user')
 
     const tournamentId = useParams().tournamentName;
+    if (location?.state?.counter) {
+        const updatedData = { deals: location.state.counter };
+        axios.get(`http://localhost:8000/api/userpoints/${username}/${tournamentId}/`)
+            .then(response => {
+                // UserPoints exists, update it
+                return axios.put(`http://localhost:8000/api/userpoints/${username}/${tournamentId}/`, updatedData);
+            })
+            .catch(error => {
+                if (error.response.status === 404) {
+                    // UserPoints does not exist, create it
+                    return axios.post(`http://localhost:8000/api/userpoints/`, {
+                        user: username,
+                        tournament: tournamentId,
+                        ...updatedData
+                    });
+                } else {
+                    // Handle other errors
+                    return Promise.reject(error);
+                }
+            })
+            .then(response => {
+                console.log('UserPoints updated or created:', response.data);
+            })
+            .catch(error => {
+                console.error('Error in updating or creating UserPoints:', error);
+            });
+
+    }
+
 
     Service.getTournament(tournamentId).then(response => {
         setTournamentName(response.data.name);
