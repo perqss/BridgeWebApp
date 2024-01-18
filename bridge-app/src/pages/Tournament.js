@@ -50,8 +50,8 @@ const Tournament = () => {
                     if (error.response.status === 404) {
                         // UserPoints does not exist, create it
                         return axios.post(`http://localhost:8000/api/userpoints/`, {
-                            user: userId,
-                            tournament: tournamentId,
+                            UserId: userId,
+                            TournamentId: tournamentId,
                             deals: 1,
                             points: location.state.counter,
                         });
