@@ -35,7 +35,7 @@ const Tournament = () => {
 
     useEffect(() => {
         const userId = localStorage.getItem('id')
-        if (true) {
+        if (location?.state?.counter) {
             const updatedData = { deals: location.state.counter };
             axios.get(`http://localhost:8000/api/userpoints/${userId}/${tournamentId}/`)
                 .then(response => {
@@ -47,26 +47,14 @@ const Tournament = () => {
                     );
                 })
                 .catch(error => {
-                    if (error.response.status === 404) {
-                        // UserPoints does not exist, create it
-                        return axios.post(`http://localhost:8000/api/userpoints/`, {
-                            UserId: userId,
-                            TournamentId: tournamentId,
-                            deals: 1,
-                            points: location.state.counter,
-                        });
-                    } else {
-                        // Handle other errors
-                        return Promise.reject(error);
-                    }
+                    axios.post(`http://localhost:8000/api/userpoints/`, {
+                        UserId: userId,
+                        TournamentId: tournamentId,
+                        deals: 1,
+                        points: location.state.counter,
+                    }).catch(error => {console.log(error)});
                 })
-                .then(response => {
-                    console.log('UserPoints updated or created:', response.data);
-                })
-                .catch(error => {
-                    console.error('Error in updating or creating UserPoints:', error);
-                });
-
+            navigate(location.pathname, {});
         }
     }, [location?.state?.counter]);
 
