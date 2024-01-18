@@ -313,10 +313,10 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
             }
 
             cardsComponents.forEach((card, index) => {
-                card.setText(String.fromCodePoint(cardInfo[index].id))
+                card.setText(String.fromCodePoint(cardInfo[index]?.id))
                 card.setStyle({
                     font: `${fontSize}px Arial`,
-                    fill: cardInfo[index].color,
+                    fill: cardInfo[index]?.color,
                 });
             })
         }
@@ -332,7 +332,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
 
         const playCard = (scene, card, cardInfo, newX, newY, index, xOffset, yOffset, cardsComponents, nextCardsComponents, cardsIndices, oldX, oldY) => {
             // Use Tween to smoothly move the card to the new position
-            card.setText(String.fromCodePoint(cardInfo.id))
+            card.setText(String.fromCodePoint(cardInfo?.id))
             card.setStyle({
                 font: `${fontSize}px Arial`,
                 fill: cardInfo.color,
