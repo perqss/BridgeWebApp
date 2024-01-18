@@ -22,8 +22,7 @@ const Tournament = () => {
     const [tournamentName, setTournamentName] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
-    const username = localStorage.getItem('user')
-    const userId = localStorage.getItem('id')
+    const tournamentId = useParams().tournamentName;
 
     useEffect(() => {
         Service.getTournament(tournamentId).then(response => {
@@ -32,12 +31,11 @@ const Tournament = () => {
             console.error('Error fetching tournament:', e);
         });
 
-    }
+    }, []);
 
     useEffect(() => {
-
-        const tournamentId = useParams().tournamentName;
-        if (location?.state?.counter) {
+        const userId = localStorage.getItem('id')
+        if (true) {
             const updatedData = { deals: location.state.counter };
             axios.get(`http://localhost:8000/api/userpoints/${userId}/${tournamentId}/`)
                 .then(response => {
@@ -52,7 +50,7 @@ const Tournament = () => {
                     if (error.response.status === 404) {
                         // UserPoints does not exist, create it
                         return axios.post(`http://localhost:8000/api/userpoints/`, {
-                            user: username,
+                            user: userId,
                             tournament: tournamentId,
                             deals: 1,
                             points: location.state.counter,
@@ -70,7 +68,7 @@ const Tournament = () => {
                 });
 
         }
-    }
+    }, [location?.state?.counter]);
 
     useEffect(() => {
         const fetchUserPoints = async () => {
