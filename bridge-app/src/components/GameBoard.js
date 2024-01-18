@@ -6,7 +6,7 @@ import {Card} from '../common/deck/card';
 import {Color} from '../common/deck/color';
 import {GameScheduler} from '../common/deck/game_scheduler';
 import { Player } from '../common/deck/player';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../style/game/GameTopContainer.css';
 import '../style/game/ContainerTop.css';
 import '../style/game/ContainerMiddle.css';
@@ -22,6 +22,9 @@ const cardOwner = new Map()
 let firstCardPlayed = false;
 
 const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
+    const location = useLocation();
+    const tournamentId = location.state?.tournamentId;
+
     let cardsSouth = hands.south.cards;
     let cardsNorth = hands.north.cards;
     let cardsEast = hands.east.cards;
@@ -150,7 +153,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
                 }
                 
                 if (countEW + countNS === 13) {
-                    navigate('/tournaments/Tournament 1', {state: {counter: countEW}});
+                    navigate('/tournaments/' + tournamentId, {state: {counter: countEW}});
                 }
                 gameScheduler.playBotCard();
             }

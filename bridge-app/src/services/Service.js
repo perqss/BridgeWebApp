@@ -30,6 +30,15 @@ class Service {
 		});
 	}
 
+	getTournament(tournamentId) {
+		const token = localStorage.getItem('token'); // Retrieve the stored token
+		return axios.get(`http://localhost:8000/api/tournaments/${tournamentId}/`, {
+			headers: {
+				'Authorization': `Token ${token}`  // Include the token in the request header
+			}
+		})
+	}
+
 }
 
 export default new Service();

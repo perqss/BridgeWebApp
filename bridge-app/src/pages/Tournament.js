@@ -18,10 +18,30 @@ const columns = [
 const Tournament = () => {
 
     const [data, setData] = useState([]);
+    const [tournamentName, setTournamentName] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
 
-    const tournamentId = location.state?.tournamentId;
+    const tournamentId = useParams().tournamentName;
+
+    Service.getTournament(tournamentId).then(response => {
+        setTournamentName(response.data.name);
+    }).catch(e => {
+            console.error('Error fetching tournament:', e);
+    });
+
+    useEffect(() => {
+        const fetchUserPoints = async () => {
+            try {
+                const response = await Service.getUserPoints(tournamentId);
+                setData(response.data);
+            } catch (e) {
+                console.error('Error fetching user points:', e);
+            }
+        };
+
+        fetchUserPoints();
+    }, []);
 
     useEffect(() => {
         const fetchUserPoints = async () => {
@@ -41,7 +61,6 @@ const Tournament = () => {
     setData(sortedRows);
   }, [])
 
-  const tournamentName = location.state?.tournamentName;
   return (
     <div style={{ height: '100vh', width: '100vw', marginTop: '60px', display: 'flex', flexDirection: 'column'}}>
         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
@@ -52,7 +71,7 @@ const Tournament = () => {
                 sx={{
                     marginBottom: '20px'
                 }}
-                onClick={() => navigate('/game')}
+                onClick={() => navigate('/game', {state: { tournamentId: tournamentId } })}
             >
                 Play Next Deal
             </FormButton>
