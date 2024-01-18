@@ -119,7 +119,7 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
         this.add.text(width * 0.447, height * 0.74, 'S', {
             font: `${south.width / 1.5}px Arial`
         });
-        const southText = this.add.text(width * 0.465, height * 0.74, 'sam', {
+        const southText = this.add.text(width * 0.465, height * 0.74, localStorage.getItem('user'), {
             font: `${southPlayer.width / 7}px Arial`
         });
          
@@ -152,8 +152,8 @@ const GameBoard = ({ setShowTailSpin, auctionWinner, gameScheduler }) => {
                     counterNSText.setText(`NS: ${countNS}`);
                 }
                 
-                if (countEW + countNS === 2) {
-                    navigate('/tournaments/' + tournamentId, {state: {counter: countEW}});
+                if (countEW + countNS === 1) {
+                    navigate('/tournaments/' + tournamentId, {state: {counter: countNS}});
                 }
                 gameScheduler.playBotCard();
             }
