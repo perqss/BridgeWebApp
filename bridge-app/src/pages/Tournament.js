@@ -33,8 +33,6 @@ const Tournament = () => {
                 // UserPoints exists, update it
                 return axios.put(`http://localhost:8000/api/userpoints/${username}/${tournamentId}/`,
                     {
-                        user: username,
-                        tournament: tournamentId,
                         deals: Number(response.data.deals+1),
                         points: Number(response.data.points)+Number(location.state.counter), }
                 );
